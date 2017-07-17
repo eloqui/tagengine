@@ -1,0 +1,51 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<tagGame name="OddShip">
+	<rooms>
+		<room name="shuttle">
+			<title>Shuttlecraft</title>
+			<description>the small shuttle-craft</description>
+			<extendedDescription>
+				A cramped, but comfortable chair sits before a glistening control panel.
+			</extendedDescription>
+			<isAccessible>false</isAccessible>
+			<exits>
+				<exit tag="east">airlock</exit>
+			</exits>
+		</room>
+		<room name="airlock">
+			<title>Airlock</title>
+			<description>the airlock that leads to the shuttle-craft</description>
+			<extendedDescription>
+				A bare room with metallic silver walls. A large red button above a keypad is on a panel by the shuttle side door. It looks slightly loose.
+			</extendedDescription>
+			<isAccessible>true</isAccessible>
+			<exits>
+				<exit tag="east">garden</exit>
+				<exit tag="west">shuttle</exit>
+			</exits>
+		</room>
+	</rooms>
+	<items>
+		<item name="spanner">
+			<title>Spanner</title>
+			<description>A smart looking shiny spanner</description>
+			<extendedDescription>It appears never to have been used.</extendedDescription>
+			<weight>3</weight>
+			  </item>
+		<item name="bucket">
+			<title>Bucket</title>
+			<description>A small metal pail</description>
+			<extendedDescription>There are no holes in this bucket, but it has a bit of wire attached as a handle.</extendedDescription>
+			<weight>5</weight>
+			<pickupMessage>You hang the bucket on a hook attached to your jacket.</pickupMessage>
+			  </item>
+	   </items>
+	<npcs>
+		<npc name="captain">
+			<title>Captain</title>
+			<description>He's wearing his captain's uniform</description>
+			<extendedDescription>He looks to be a proud man, or at least a man who used to be proud of something.
+					 He has an odd glint in his eye... and you're a bit suspicious of him.</extendedDescription>
+			  </npc>
+	   </npcs>
+</tagGame>
