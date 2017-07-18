@@ -57,37 +57,14 @@ namespace TagEngine
 		#endregion
 
 		#region Constructors
-
-		/// <summary>
-		/// Constructor
-		/// </summary>
-		/// <param name="message">The message to output</param>
-		public Response(string message)
-		{
-			this.message = message;
-			this.quit = false;
-			this.isImportant = false;
-		}
-
-		/// <summary>
-		/// Constructor
-		/// </summary>
-		/// <param name="message">The message to output</param>
-		/// <param name="isImportant">Whether the message is important</param>
-		public Response(string message, bool isImportant)
-		{
-			this.message = message;
-			this.quit = false;
-			this.isImportant = isImportant;
-		}
-
+        
 		/// <summary>
 		/// Constructor
 		/// </summary>
 		/// <param name="message">The message to output</param>
 		/// <param name="quit">Whether to quit the game</param>
 		/// <param name="isImportant">Whether the message is important</param>
-		public Response(string message, bool quit, bool isImportant)
+		public Response(string message, bool quit = false, bool isImportant = false)
 		{
 			this.message = message;
 			this.quit = quit;

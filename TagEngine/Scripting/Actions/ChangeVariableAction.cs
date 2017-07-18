@@ -10,7 +10,8 @@ namespace TagEngine.Scripting.Actions
 	{
 		protected override void DoAction()
 		{
-			((Variable)this.Entity).Val = Val;
+            // TODO: this
+			//((Variable)this.Entity).Value = Val;
 		}
 	}
 }

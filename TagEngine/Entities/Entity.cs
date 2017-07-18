@@ -1,60 +1,61 @@
 using System;
 using System.Collections.Generic;
-using System.Text;
 
 namespace TagEngine.Entities
 {
-	/// <summary>
-	/// An entity in the world
-	/// </summary>
-	[Serializable]
-	public class Entity
-	{
-		/// <summary>
-		/// Unique identifier for this object
-		/// </summary>
-		private Guid id;
+    /// <summary>
+    /// An entity in the world
+    /// </summary>
+    [Serializable]
+    public class Entity
+    {
+        /// <summary>
+        /// Unique identifier for this object
+        /// </summary>
+        public Guid Id
+        {
+            get;
+            protected set;
+        }
 
-		/// <summary>
-		/// An internal reference name for this object
-		/// </summary>
-		private string name;
+        /// <summary>
+        /// Internal name of this object
+        /// </summary>
+        public string Name
+        {
+            get;
+            protected set;
+        }
 
-		/// <summary>
-		/// Gets the unique identifier for this object
-		/// </summary>
-		public virtual Guid Id
-		{
-			get { return id; }
-		}
+        /// <summary>
+        /// Constructor
+        /// </summary>
+        /// <param name="name">The name of this entity</param>
+        public Entity(string name)
+        {
+            this.Name = name;
+            this.Id = Guid.NewGuid();
+        }
 
-		/// <summary>
-		/// Gets the internal name of this object
-		/// </summary>
-		public virtual string Name
-		{
-			get { return name; }
-		}
+        /// <summary>
+        /// Constructor
+        /// </summary>
+        /// <param name="name">The name of this entity</param>
+        /// <param name="id">The ID of this entity</param>
+        public Entity(string name, Guid id)
+        {
+            this.Name = name;
+            this.Id = id;
+        }
+    }
 
-		/// <summary>
-		/// Constructor
-		/// </summary>
-		/// <param name="name">The name of this entity</param>
-		public Entity(string name)
-		{
-			this.name = name;
-			this.id = Guid.NewGuid();
-		}
+    /// <summary>
+    /// A collection of entities indexed by a name
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
+    public class Entities<T> : Dictionary<string, T>
+        where T : Entity
+    {
 
-		/// <summary>
-		/// Constructor
-		/// </summary>
-		/// <param name="name">The name of this entity</param>
-		/// <param name="id">The ID of this entity</param>
-		public Entity(string name, Guid id)
-		{
-			this.name = name;
-			this.id = id;
-		}
-	}
+    }
 }

@@ -78,9 +78,8 @@ namespace TagEngine.Entities
 		/// <param name="extendedDescription">The new item's extended description</param>
 		/// <param name="weight">The new item's weight</param>
 		public Item(string name, string title, string description, string extendedDescription, int weight)
-			: base(name, title, description)
+			: base(name, title, description, extendedDescription)
 		{
-			this.ExtendedDescription = extendedDescription;
 			this.weight = weight;
 			this.pickupMessage = "";
 			this.canPickup = true;
@@ -96,9 +95,8 @@ namespace TagEngine.Entities
 		/// <param name="weight">The new item's weight</param>
 		/// <param name="pickupMessage">The message given to the user when this item is picked up</param>
 		public Item(string name, string title, string description, string extendedDescription, int weight, string pickupMessage)
-			: base(name, title, description)
+			: base(name, title, description, extendedDescription)
 		{
-			this.ExtendedDescription = extendedDescription;
 			this.weight = weight;
 			this.pickupMessage = pickupMessage;
 			this.canPickup = true;
@@ -115,9 +113,8 @@ namespace TagEngine.Entities
 		/// <param name="pickupMessage">The message given to the user when this item is picked up</param>
 		/// <param name="canPickup">Whether the new item can be picked up</param>
 		public Item(string name, string title, string description, string extendedDescription, int weight, string pickupMessage, bool canPickup)
-			: base(name, title, description)
+			: base(name, title, description, extendedDescription)
 		{
-			this.ExtendedDescription = extendedDescription;
 			this.weight = weight;
 			this.pickupMessage = pickupMessage;
 			this.canPickup = canPickup;

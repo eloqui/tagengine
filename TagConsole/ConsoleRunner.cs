@@ -2,6 +2,7 @@ using System;
 using System.Text;
 
 using TagEngine;
+using TagEngine.Data;
 
 namespace TagConsole
 {
@@ -45,7 +46,12 @@ namespace TagConsole
 		/// </summary>
 		public void Play()
 		{
-			WriteLine(Engine.Instance.Welcome);
+            var engine = Engine.Instance;
+
+            // TODO: remove this debug guff
+            engine.LoadGame(DataLoader.GetTestGame());
+            
+            WriteLine(engine.GameState.WelcomeMessage);
 			//WriteLine(engine.Describe(engine.CurrentRoom));
 
 			bool finished = false;
@@ -56,7 +62,7 @@ namespace TagConsole
 				input = Console.ReadLine();
 
 				// process input
-				Response response = Engine.Instance.ProcessInput(input);
+				Response response = engine.ProcessInput(input);
 
 				WriteLine(response.Message);
 

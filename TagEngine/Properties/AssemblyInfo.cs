@@ -9,9 +9,9 @@ using System.Resources;
 [assembly: AssemblyTitle("TagEngine")]
 [assembly: AssemblyDescription("Text Adventure Game Engine")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("meshta.org")]
+[assembly: AssemblyCompany("Polarity Studio")]
 [assembly: AssemblyProduct("TagEngine")]
-[assembly: AssemblyCopyright("Copyright © meshta.org 2008")]
+[assembly: AssemblyCopyright("Copyright 2017 Polarity Studio")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 

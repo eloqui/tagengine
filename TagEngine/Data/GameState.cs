@@ -6,88 +6,112 @@ using TagEngine.Entities;
 
 namespace TagEngine.Data
 {
+    [Serializable]
 	public class GameState
 	{
 
 		#region Fields
-
-		/// <summary>
-		/// Collection of all items in the game
-		/// </summary>
-		private Dictionary<string, Item> items = new Dictionary<string, Item>();
-
-		/// <summary>
-		/// Collection of all NPCs in the game
-		/// </summary>
-		private Dictionary<string, Npc> npcs = new Dictionary<string, Npc>();
-
-		/// <summary>
-		/// Collection of all rooms in the game
-		/// </summary>
-		private Dictionary<string, Room> rooms = new Dictionary<string, Room>();
-
-		/// <summary>
-		/// Game state global variables
-		/// </summary>
-		private Variables variables = new Variables();
-
-		/// <summary>
-		/// The player character
-		/// </summary>
-		private Ego ego;
-
+        
 		#endregion
 
 		#region Properties
 
 		/// <summary>
-		/// Get the collection of all the items in the game
+		/// Collection of all the items in the game
 		/// </summary>
-		public Dictionary<string, Item> Items
-		{
-			get { return items; }
-		}
+		public Entities<Item> Items { get; protected set; }
 
-		/// <summary>
-		/// Get the collection of all the rooms in the game
-		/// </summary>
-		public Dictionary<string, Room> Rooms
-		{
-			get { return rooms; }
-		}
+        /// <summary>
+        /// Collection of all the rooms in the game
+        /// </summary>
+        public Entities<Room> Rooms { get; protected set; }
 
-		/// <summary>
-		/// Get the collection of all the NPCs in the game
-		/// </summary>
-		public Dictionary<string, Npc> Npcs
-		{
-			get { return npcs; }
-		}
+        /// <summary>
+        /// Collection of all the NPCs in the game
+        /// </summary>
+        public Entities<Npc> Npcs { get; protected set; }
 
-		/// <summary>
-		/// Get the collection of variables
-		/// </summary>
-		public Variables Variables
-		{
-			get { return variables; }
-		}
+        /// <summary>
+        /// Collection of variables
+        /// </summary>
+        public Variables Variables { get; protected set; }
 
-		/// <summary>
-		/// Get the current player
-		/// </summary>
-		public Ego Ego
-		{
-			get { return ego; }
-		}
+        /// <summary>
+        /// Current player
+        /// </summary>
+        public Ego Ego { get; protected set; }
 
-		#endregion
+        /// <summary>
+        /// Welcome message to the game
+        /// </summary>
+        public string WelcomeMessage { get; protected set; }
 
-		public GameState()
+        /// <summary>
+        /// 
+        /// </summary>
+        public bool IsSetupFinalised { get; protected set; }
+
+        #endregion
+
+        public GameState()
 		{
-			ego = new Ego("You", "It's just you.");
+            IsSetupFinalised = false;
+
+            Items = new Entities<Item>();
+            Rooms = new Entities<Room>();
+            Npcs = new Entities<Npc>();
+            Variables = new Variables();
+
+            WelcomeMessage = "Welcome!";
+			Ego = new Ego("You", "It's just you.");
 
 			Variables.Set("testvar1", "value");
 			Variables.Set("test2", 123.456);
-		}
+        }
+        
+        public void FinaliseSetup()
+        {
+            IsSetupFinalised = true;
+        }
+
+        public void AddItem(Item item)
+        {
+            if (IsSetupFinalised) throw new InvalidOperationException("Cannot add items after game state setup is finalised");
+
+            Items.Add(item.Name, item);
+        }
+
+        public void AddRoom(Room room)
+        {
+            if (IsSetupFinalised) throw new InvalidOperationException("Cannot add rooms after game state setup is finalised");
+
+            Rooms.Add(room.Name, room);
+        }
+
+        public void AddNpc(Npc npc)
+        {
+            if (IsSetupFinalised) throw new InvalidOperationException("Cannot add NPCs after game state setup is finalised");
+
+            Npcs.Add(npc.Name, npc);
+        }
+
+        public void SetEgo(Ego ego)
+        {
+            if (IsSetupFinalised) throw new InvalidOperationException("Cannot set Ego after game state setup is finalised");
+
+            Ego = ego;
+        }
+
+        public void SetCurrentLocation(Room room)
+        {
+            Ego.MoveTo(room);
+        }
+
+        public void SetWelcomeMessage(string welcomeMessage)
+        {
+            if (IsSetupFinalised) throw new InvalidOperationException("Cannot set welcome message after game state setup is finalised");
+
+            WelcomeMessage = welcomeMessage;
+        }
 	}
 }

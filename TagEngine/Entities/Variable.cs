@@ -7,53 +7,56 @@ namespace TagEngine.Entities
 	/// <summary>
 	/// A variable
 	/// </summary>
-	public class Variable : Entity
+    [Serializable]
+	public struct Variable
 	{
-		/// <summary>
-		/// The variable's value
-		/// </summary>
-		private object val;
+        /// <summary>
+        /// This variable's name
+        /// </summary>
+        public string Name;
+
+        /// <summary>
+        /// This variable's value
+        /// </summary>
+        public object Value;
 
 		/// <summary>
-		/// Gets or sets this variable's value
-		/// </summary>
-		public object Val
-		{
-			get { return val; }
-			set { val = value; }
-		}
-
-		/// <summary>
-		/// Constructor (sets Val to null)
+		/// Constructor (sets Value to null)
 		/// </summary>
 		/// <param name="name">The variable's name</param>
 		public Variable(string name)
-			: base(name)
 		{
-			this.val = null;
+            this.Name = name;
+			this.Value = null;
 		}
 
 		/// <summary>
 		/// Constructor
 		/// </summary>
 		/// <param name="name">The variable name</param>
-		/// <param name="val">The variable's initial value</param>
-		public Variable(string name, object val)
-			: base(name)
+		/// <param name="value">The variable's initial value</param>
+		public Variable(string name, object value)
 		{
-			this.val = val;
+            this.Name = name;
+			this.Value = value;
 		}
+
+        //public T GetValue<T>()
+        //{
+        //    return (T)Value;
+        //}
 	}
 
 	/// <summary>
 	/// A collection of variables
 	/// </summary>
+    [Serializable]
 	public class Variables
 	{
 		/// <summary>
 		/// Collection of variables
 		/// </summary>
-		private Dictionary<string, Variable> variables = new Dictionary<string,Variable>();
+		private Dictionary<string, Variable> variables = new Dictionary<string, Variable>();
 
 		/// <summary>
 		/// Sets the value of a variable or creates it if it does not exist
@@ -62,13 +65,16 @@ namespace TagEngine.Entities
 		/// <param name="value">The new value for the variable</param>
 		public void Set(string name, object value)
 		{
+            Variable v;
+            v.Name = name;
+            v.Value = value;
 			if (variables.ContainsKey(name))
 			{
-				variables[name].Val = value;
+				variables[name] = v;
 			}
 			else
 			{
-				variables.Add(name, new Variable(name, value));
+				variables.Add(name, v);
 			}
 		}
 
@@ -79,7 +85,7 @@ namespace TagEngine.Entities
 		/// <returns>The value of the variable or null if it is uninitialised</returns>
 		public object GetVariable(string name)
 		{
-			if (variables.ContainsKey(name)) return variables[name].Val;
+			if (variables.ContainsKey(name)) return variables[name].Value;
 			return null;
 		}
 
@@ -87,11 +93,12 @@ namespace TagEngine.Entities
 		/// Get a variable object from the collection
 		/// </summary>
 		/// <param name="name">The name of the variable to get</param>
-		/// <returns>The variable or null if it is uninitialised</returns>
-		public Variable GetRawVariable(string name)
+		/// <returns>The variable (Value will be null if not initialised)</returns>
+		public Variable GetVariableObject(string name)
 		{
 			if (variables.ContainsKey(name)) return variables[name];
-			return null;
+
+			return new Variable(name);
 		}
 
 		/// <summary>
@@ -105,7 +112,7 @@ namespace TagEngine.Entities
 			StringBuilder sb = new StringBuilder();
 			foreach (KeyValuePair<string, Variable> kvp in variables)
 			{
-				sb.AppendFormat("{0}: {1}\n", kvp.Key, kvp.Value.Val.ToString());
+				sb.AppendFormat("{0}: {1}\n", kvp.Key, kvp.Value.Value.ToString());
 			}
 			return sb.ToString();
 		}

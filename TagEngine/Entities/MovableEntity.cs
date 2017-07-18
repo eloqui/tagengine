@@ -45,14 +45,27 @@ namespace TagEngine.Entities
 			this.currentRoom = null;
 		}
 
-		/// <summary>
-		/// Constructor
-		/// </summary>
-		/// <param name="name">Name of the entity</param>
-		/// <param name="title">Title of the entity</param>
-		/// <param name="description">Description of the entity</param>
-		/// <param name="room">The room to start in</param>
-		public MovableEntity(string name, string title, string description, Room room)
+        /// <summary>
+        /// Constructor
+        /// </summary>
+        /// <param name="name">Name of the entity</param>
+        /// <param name="title">Title of the entity</param>
+        /// <param name="description">Description of the entity</param>
+        /// <param name="extendedDescription">Long description of the entity</param>
+        public MovableEntity(string name, string title, string description, string extendedDescription)
+            : base(name, title, description, extendedDescription)
+        {
+            this.currentRoom = null;
+        }
+
+        /// <summary>
+        /// Constructor
+        /// </summary>
+        /// <param name="name">Name of the entity</param>
+        /// <param name="title">Title of the entity</param>
+        /// <param name="description">Description of the entity</param>
+        /// <param name="room">The room to start in</param>
+        public MovableEntity(string name, string title, string description, Room room)
 			: base(name, title, description)
 		{
 			this.currentRoom = room;

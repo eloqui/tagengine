@@ -4,11 +4,10 @@ using System.Collections.Generic;
 using System.Text;
 
 using NUnit.Framework;
-using NUnit.Framework.SyntaxHelpers;
 
 using TagEngine.Data;
 
-namespace TagEngine.Parser
+namespace TagEngine.Input
 {
 	/// <summary>
 	/// Statuses of tokens
@@ -171,6 +170,8 @@ namespace TagEngine.Parser
 		/// <param name="elements">Array of split elements</param>
 		private void Tokenise(string[] elements)
 		{
+            var ws = new WordStore();
+
 			tokens = new List<Token>(elements.Length);
 
 			foreach (string el in elements)
@@ -180,7 +181,7 @@ namespace TagEngine.Parser
 
 				if (element.Equals(String.Empty)) continue;
 
-				if (WordStore.IsIgnored(element))
+				if (ws.IsIgnored(element))
 				{
 					// token added as an ignored word
 					tokens.Add(new Token(element, TokenStatus.Ignored));
@@ -190,11 +191,11 @@ namespace TagEngine.Parser
 				{
 					// this will add "back" as both a direction and a command
 					// but that doesn't matter (allows "go back" and "back")
-					if (WordStore.IsDirection(element))
+					if (ws.IsDirection(element))
 					{
 						tokens.Add(new Token(element, TokenStatus.Direction));
 					}
-					else if (WordStore.IsCommand(element))
+					else if (ws.IsCommand(element))
 					{
 						command = new Token(element, TokenStatus.Command);
 						tokens.Add(command);
