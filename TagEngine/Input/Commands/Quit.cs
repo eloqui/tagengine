@@ -8,11 +8,11 @@ namespace TagEngine.Input.Commands
 {
     class Quit : Command
     {
-        public Quit() : base("quit", new List<string> { "exit", "\\q", "bye" }) { }
+        public Quit() : base("quit", new List<string> { "exit", "\\q", "bye" }, false) { }
 
         public override Response Process(Engine engine, Tokeniser tokens)
         {
-            return new Response("You're leaving so soon?", true);
+            return new Response("You're leaving so soon?", ResponseAction.Quit);
         }
     }
 }

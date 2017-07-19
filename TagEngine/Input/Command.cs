@@ -2,30 +2,62 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.Serialization;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace TagEngine.Input
 {
+    /// <summary>
+    /// Base class for commands
+    /// </summary>
     public abstract class Command
     {
+        /// <summary>
+        /// Process the command
+        /// </summary>
+        /// <param name="engine"></param>
+        /// <param name="tokens"></param>
+        /// <returns></returns>
         public abstract Response Process(Engine engine, Tokeniser tokens);
 
+        /// <summary>
+        /// The command primary word
+        /// </summary>
         public string Word { get; protected set; }
+
+        /// <summary>
+        /// Synonym words for the command
+        /// </summary>
         public List<string> Synonyms { get; protected set; }
 
+        /// <summary>
+        /// Natural syntax commands can be placed anywhere in the input, non-natural must be first word
+        /// </summary>
+        public bool IsNaturalSyntax { get; protected set; }
+
+        /// <summary>
+        /// Constructor
+        /// </summary>
         public Command()
             : this("", null)
         {
 
         }
 
-        protected Command(string word, List<string> synonyms)
+        /// <summary>
+        /// Constructor
+        /// </summary>
+        /// <param name="word"></param>
+        /// <param name="synonyms"></param>
+        protected Command(string word, List<string> synonyms, bool isNaturalSyntax = true)
         {
             Word = word;
             Synonyms = synonyms;
+            IsNaturalSyntax = isNaturalSyntax;
         }
 
+        /// <summary>
+        /// Get all the command words (including primary and any synonyms)
+        /// </summary>
+        /// <returns></returns>
         public string[] GetCommandWords()
         {
             var words = Synonyms ?? new List<string>();
@@ -36,17 +68,23 @@ namespace TagEngine.Input
 
     public static class CommandManager
     {
-        private static Dictionary<string, Command> commands = null;
+        /// <summary>
+        /// All command words and the command they run
+        /// </summary>
+        private static SortedDictionary<string, Command> commands = null;
 
-        private static List<string> primaryCommands = null;
+        /// <summary>
+        /// All primary command words
+        /// </summary>
+        private static SortedSet<string> primaryCommands = null;
 
         /// <summary>
         /// Initialise the collection of commands
         /// </summary>
         public static void Initialise()
         {
-            commands = new Dictionary<string, Command>();
-            primaryCommands = new List<string>();
+            commands = new SortedDictionary<string, Command>(StringComparer.CurrentCultureIgnoreCase);
+            primaryCommands = new SortedSet<string>(StringComparer.CurrentCultureIgnoreCase);
 
             // detect all children of the Command class, and add them to the dictionary
             var subClasses =
@@ -79,6 +117,17 @@ namespace TagEngine.Input
         }
 
         /// <summary>
+        /// Get list of primary command words we know about
+        /// </summary>
+        /// <returns></returns>
+        public static string[] GetPrimaryCommandWords()
+        {
+            if (commands == null) Initialise();
+
+            return primaryCommands.ToArray();
+        }
+
+        /// <summary>
         /// Get a Command based on a word
         /// </summary>
         /// <param name="command"></param>
@@ -99,6 +148,27 @@ namespace TagEngine.Input
             }
 
             return commands[command];
+        }
+
+        /// <summary>
+        /// Check if a word (in an optional position) is a command word
+        /// </summary>
+        /// <param name="command"></param>
+        /// <param name="position"></param>
+        /// <returns></returns>
+        public static bool IsCommand(string command, int position = 0)
+        {
+            if (commands == null) Initialise();
+
+            if (commands.ContainsKey(command))
+            {
+                // if the command is not in position 0, it must not be a natural command
+                if (position != 0 && !commands[command].IsNaturalSyntax) return false;
+
+                return true;
+            }
+
+            return false;
         }
     }
 

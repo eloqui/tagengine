@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Runtime.Serialization;
 
 namespace TagEngine.Entities
 {
@@ -53,9 +54,14 @@ namespace TagEngine.Entities
     /// A collection of entities indexed by a name
     /// </summary>
     /// <typeparam name="T"></typeparam>
+    [Serializable]
     public class Entities<T> : Dictionary<string, T>
         where T : Entity
     {
+        public Entities() { }
 
+        protected Entities(SerializationInfo info, StreamingContext context)
+            : base(info, context)
+        { }
     }
 }

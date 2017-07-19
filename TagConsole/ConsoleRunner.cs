@@ -64,9 +64,34 @@ namespace TagConsole
 				// process input
 				Response response = engine.ProcessInput(input);
 
-				WriteLine(response.Message);
+                // handle response messages
+                foreach (var message in response.Messages)
+                {
+                    // handle message.Type
+                    switch (message.Type)
+                    {
+                        case ResponseMessageType.Error:
+                            Console.ForegroundColor = ConsoleColor.Red;
+                            break;
+                        case ResponseMessageType.Warning:
+                            Console.ForegroundColor = ConsoleColor.Yellow;
+                            break;
+                        case ResponseMessageType.Important:
+                            Console.ForegroundColor = ConsoleColor.White;
+                            break;
+                    }
 
-				finished = response.Quit;
+                    WriteLine(message.Message);
+
+                    Console.ResetColor();
+                }
+
+                // handle response actions
+                foreach (var action in response.Actions)
+                {
+                    if (action == ResponseAction.Quit) finished = true;
+                    if (action == ResponseAction.Pause) Pause("Paused. Press enter to continue...");
+                }
 			}
 
 			WriteLine("Thank you for playing. Goodbye!");
@@ -79,8 +104,7 @@ namespace TagConsole
 		/// <param name="instructions">Optional instructions to output before pausing</param>
 		public void Pause(string instructions)
 		{
-			if (instructions != null && instructions != String.Empty)
-				Write(instructions);
+			if (!String.IsNullOrEmpty(instructions)) Write(instructions);
 			Console.ReadLine();
 		}
 

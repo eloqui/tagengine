@@ -9,7 +9,7 @@ namespace TagEngine.Input.Commands
 {
     class Help : Command
     {
-        public Help() : base("help", null) { }
+        public Help() : base("help", null, false) { }
 
         public override Response Process(Engine engine, Tokeniser tokens)
         {
@@ -17,12 +17,10 @@ namespace TagEngine.Input.Commands
             sb.Append("TODO: game specific help here");
             sb.Append(Environment.NewLine);
             sb.Append("Available command words are:" + Environment.NewLine);
-
-            var ws = new WordStore();
-
+            
             sb.Append(" ");
             int ii = 0;
-            foreach (string cmd in ws.Commands)
+            foreach (string cmd in CommandManager.GetPrimaryCommandWords())
             {
                 sb.Append(cmd + " ");
                 if ((++ii % 6) == 0) sb.Append(Environment.NewLine + " ");

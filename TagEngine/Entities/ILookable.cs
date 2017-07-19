@@ -5,7 +5,7 @@ namespace TagEngine.Entities
 	/// <summary>
 	/// An object that has a name and a description
 	/// </summary>
-	interface ILookable
+	public interface ILookable
 	{
 		/// <summary>
 		/// Gets or sets a name

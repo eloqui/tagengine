@@ -1,10 +1,26 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
-using System.Diagnostics;
+using System.Linq;
+
+using TagEngine.Data;
 
 namespace TagEngine.Entities
 {
+    /// <summary>
+    /// A non-pickupable feature of a room that can be looked at/examined
+    /// </summary>
+    public class RoomFeature : InteractiveEntity
+    {
+        // add a collection of lookables that can be filled with non-items that can be looked at
+        //       so that if there are room features of note, they can be examined
+        public RoomFeature(string name, string title, string description, string extendedDescription = null)
+            : base(name, title, description, extendedDescription)
+        {
+
+        }
+    }
+
     /// <summary>
     /// Represents a room which initially has no exits.
     /// A hashtable is used to hold exits which are string representing the keys of the rooms
@@ -14,24 +30,11 @@ namespace TagEngine.Entities
     public class Room : InteractiveEntity
     {
         #region Fields
-
-        /// <summary>
-        /// Exit types
-        /// </summary>
-        public enum Exit
-        {
-            North,
-            East,
-            South,
-            West,
-            Up,
-            Down
-        }
-
+        
         /// <summary>
         /// Hash of exits from this room
         /// </summary>
-        private Dictionary<Exit, Room> exitKeys;
+        private Dictionary<Direction, Room> exitKeys;
 
         /// <summary>
         /// Number of visits to this room
@@ -102,7 +105,7 @@ namespace TagEngine.Entities
         /// <summary>
         /// Gets the hash containing this room's available exits
         /// </summary>
-        public Dictionary<Exit, Room> ExitKeys
+        public Dictionary<Direction, Room> ExitKeys
         {
             get { return exitKeys; }
         }
@@ -149,6 +152,11 @@ namespace TagEngine.Entities
             get { return npcs; }
         }
 
+        /// <summary>
+        /// Features of the room that can be looked at or examined
+        /// </summary>
+        public Dictionary<string, RoomFeature> Features { get; protected set; }
+
         #endregion
 
         #region Constructors
@@ -160,28 +168,13 @@ namespace TagEngine.Entities
         /// <param name="title">The new room's title</param>
         /// <param name="description">The description of the new room</param>
         /// <param name="exits">An array describing available exits</param>
-        public Room(string name, string title, string description)
-            : base(name, title, description)
-        {
-            this.exitKeys = new Dictionary<Exit, Room>(6);
-            this.items = new List<Item>();
-            this.npcs = new List<Npc>();
-        }
-
-        /// <summary>
-        /// Constructor
-        /// </summary>
-        /// <param name="name">The new room's name</param>
-        /// <param name="title">The new room's title</param>
-        /// <param name="description">The description of the new room</param>
-        /// <param name="exits">An array describing available exits</param>
-        /// <param name="isAccessible">Whether the room is accessible</param>
-        public Room(string name, string title, string description, bool isAccessible)
+        public Room(string name, string title, string description, bool isAccessible = true)
             : base(name, title, description, isAccessible)
         {
-            this.exitKeys = new Dictionary<Exit, Room>(6);
+            this.exitKeys = new Dictionary<Direction, Room>(6);
             this.items = new List<Item>();
             this.npcs = new List<Npc>();
+            Features = new Dictionary<string, RoomFeature>();
         }
 
         /// <summary>
@@ -191,13 +184,10 @@ namespace TagEngine.Entities
         /// <param name="title">The new room's title</param>
         /// <param name="description">The description of the new room</param>
         /// <param name="exits">An array describing available exits</param>
-        public Room(string name, string title, string description, string[] exits)
-            : base(name, title, description)
+        public Room(string name, string title, string description, Exits exits)
+            : this(name, title, description)
         {
-            this.exitKeys = new Dictionary<Exit, Room>(6);
-            //SetExits(exits);
-            this.items = new List<Item>();
-            this.npcs = new List<Npc>();
+            SetExits(exits);
         }
 
         /// <summary>
@@ -209,18 +199,59 @@ namespace TagEngine.Entities
         /// <param name="exits">An array describing available exits</param>
         /// <param name="items">An array of item keys to add</param>
         /// <param name="npcs">An array of NPC keys to add</param>
-        public Room(string name, string title, string description, string[] exits, Item[] items, Npc[] npcs)
-            : base(name, title, description)
+        public Room(string name, string title, string description, Exits exits, Item[] items, Npc[] npcs, RoomFeature[] features)
+            : this(name, title, description, exits)
         {
-            this.exitKeys = new Dictionary<Exit, Room>(6);
-            //SetExits(exits);
-            foreach (Item item in items) this.items.Add(item);
-            foreach (Npc npc in npcs) this.npcs.Add(npc);
+            foreach (var item in items) AddItem(item);
+            foreach (var npc in npcs) AddNpc(npc);
+            foreach (var feature in features) AddFeature(feature);
         }
 
         #endregion
 
         #region Methods
+
+        /// <summary>
+        /// Add a feature to the room
+        /// </summary>
+        /// <param name="feature"></param>
+        public void AddFeature(RoomFeature feature)
+        {
+            Features.Add(feature.Name, feature);
+        }
+        // TODO: allow some method for updating features based on conditions etc.
+
+        /// <summary>
+        /// Check if the room has a feature
+        /// </summary>
+        /// <param name="featureName"></param>
+        /// <returns></returns>
+        public bool HasFeature(string featureName)
+        {
+            return Features.ContainsKey(featureName);
+        }
+
+        /// <summary>
+        /// Check if the room has a feature
+        /// </summary>
+        /// <param name="feature"></param>
+        /// <returns></returns>
+        public bool HasFeature(RoomFeature feature)
+        {
+            return Features.ContainsValue(feature);
+        }
+
+        /// <summary>
+        /// Get a room feature by name
+        /// </summary>
+        /// <param name="featureName"></param>
+        /// <returns></returns>
+        public RoomFeature GetFeature(string featureName)
+        {
+            if (!HasFeature(featureName)) return null;
+
+            return Features[featureName];
+        }
 
         /// <summary>
         /// Add a collectable item to this room.
@@ -249,6 +280,12 @@ namespace TagEngine.Entities
         {
             return this.items.Contains(item);
         }
+
+        //public bool HasItem(string itemName)
+        //{
+        //    var matchingItems = from item in items where item.Name == itemName select item;
+        //    return matchingItems.Count() > 0;
+        //}
 
         /// <summary>
         /// Add an NPC to this room
@@ -282,9 +319,9 @@ namespace TagEngine.Entities
         /// <summary>
         /// Add an exit to this room
         /// </summary>
-        /// <param name="name">The exit to set</param>
+        /// <param name="name">The exit direction to set</param>
         /// <param name="room">The room the new exit leads to</param>
-        public void AddExit(Exit exit, Room room)
+        public void AddExit(Direction exit, Room room)
         {
             this.exitKeys.Add(exit, room);
         }
@@ -292,9 +329,9 @@ namespace TagEngine.Entities
         /// <summary>
         /// Get the next room in a particular direction
         /// </summary>
-        /// <param name="direction">A direction</param>
+        /// <param name="direction">The exit direction</param>
         /// <returns>The next room in the given direction or null if no room that way</returns>
-        public Room GetNextRoom(Exit direction)
+        public Room GetNextRoom(Direction direction)
         {
             return this.exitKeys[direction] ?? null;
         }
@@ -317,6 +354,10 @@ namespace TagEngine.Entities
             return null;
         }
 
+        /// <summary>
+        /// Set all the exits
+        /// </summary>
+        /// <param name="exits"></param>
         public void SetExits(Exits exits)
         {
             foreach (var exit in exits)
@@ -325,11 +366,14 @@ namespace TagEngine.Entities
             }
         }
 
-        public class Exits : List<KeyValuePair<Exit, Room>>
+        /// <summary>
+        /// A list of exits
+        /// </summary>
+        public class Exits : List<KeyValuePair<Direction, Room>>
         {
-            public void Add(Exit exit, Room room)
+            public void Add(Direction exit, Room room)
             {
-                Add(new KeyValuePair<Exit, Room>(exit, room));
+                Add(new KeyValuePair<Direction, Room>(exit, room));
             }
         }
 
@@ -386,21 +430,11 @@ namespace TagEngine.Entities
         /// <summary>
         /// Get the direction string for a Room.Exit
         /// </summary>
-        /// <param name="exit"></param>
+        /// <param name="exit">The exit direction</param>
         /// <returns>The direction string</returns>
-        public static string GetExitDirection(this Room.Exit exit)
+        public static string GetExitDirection(this Direction exit)
         {
-            switch (exit)
-            {
-                case Room.Exit.North: return "north"; // TODO: probably load from the WordStore directions array by index?
-                case Room.Exit.East: return "east";
-                case Room.Exit.South: return "south";
-                case Room.Exit.West: return "west";
-                case Room.Exit.Up: return "up";
-                case Room.Exit.Down: return "down";
-            }
-
-            return ""; // TODO: probably throw an exception here
+            return WordStore.GetDirectionWord(exit);
         }
     }
 }

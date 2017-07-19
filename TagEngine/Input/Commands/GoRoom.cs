@@ -22,19 +22,22 @@ namespace TagEngine.Input.Commands
             //    return new Response("Go where?");
             //}
 
+            //var ego = engine.GameState.Ego;
+
             //if (d == "back")
             //{
-            //    if (Engine.Instance.PreviousRoom != null)
+            //    if (ego.PreviousRoom != null)
             //    {
-            //        return Engine.Instance.Ego.MoveTo(Engine.Instance.PreviousRoom);
-            //    } else
+            //        return ego.MoveTo(ego.PreviousRoom);
+            //    }
+            //    else
             //    {
             //        return new Response("You've not been anywhere yet!");
             //    }
             //}
 
             //// try to leave current room
-            //var newRoom = Engine.Instance.Ego.Room.NextRoom(d);
+            //var newRoom = ego.Room.NextRoom(d);
         }
     }
 }

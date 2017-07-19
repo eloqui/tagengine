@@ -11,40 +11,25 @@ namespace TagEngine.Entities
 	public class MovableEntity : InteractiveEntity, IMovable
 	{
 		#region Fields
-
-		/// <summary>
-		/// The room this entity is currently in
-		/// </summary>
-		private Room currentRoom;
-
+        
 		#endregion
 
 		#region Properties
 
 		/// <summary>
-		/// Get the room this entity is currently in
+		/// The room this entity is currently in
 		/// </summary>
-		public Room CurrentRoom
-		{
-			get { return currentRoom; }
-		}
+		public Room CurrentRoom { get; protected set; }
+
+        /// <summary>
+        /// The room this entity was previously in
+        /// </summary>
+        public Room PreviousRoom { get; protected set; }
 
 		#endregion
 
 		#region Constructors
-
-		/// <summary>
-		/// Constructor
-		/// </summary>
-		/// <param name="name">Name of the entity</param>
-		/// <param name="title">Title of the entity</param>
-		/// <param name="description">Description of the entity</param>
-		public MovableEntity(string name, string title, string description)
-			: base(name, title, description)
-		{
-			this.currentRoom = null;
-		}
-
+        
         /// <summary>
         /// Constructor
         /// </summary>
@@ -52,10 +37,11 @@ namespace TagEngine.Entities
         /// <param name="title">Title of the entity</param>
         /// <param name="description">Description of the entity</param>
         /// <param name="extendedDescription">Long description of the entity</param>
-        public MovableEntity(string name, string title, string description, string extendedDescription)
+        public MovableEntity(string name, string title, string description, string extendedDescription = null)
             : base(name, title, description, extendedDescription)
         {
-            this.currentRoom = null;
+            CurrentRoom = null;
+            PreviousRoom = null;
         }
 
         /// <summary>
@@ -68,7 +54,8 @@ namespace TagEngine.Entities
         public MovableEntity(string name, string title, string description, Room room)
 			: base(name, title, description)
 		{
-			this.currentRoom = room;
+			CurrentRoom = room;
+            PreviousRoom = null;
 		}
 
 		#endregion
@@ -82,7 +69,8 @@ namespace TagEngine.Entities
 		/// <param name="room">The room to move to</param>
 		public void MoveTo(Room room)
 		{
-			currentRoom = room;
+            PreviousRoom = CurrentRoom;
+			CurrentRoom = room;
 		}
 
 		/// <summary>
@@ -91,7 +79,7 @@ namespace TagEngine.Entities
 		/// <param name="roomName">The name of the room to move to</param>
 		public void MoveTo(string roomName)
 		{
-			currentRoom = Engine.Instance.GameState.Rooms[roomName];
+			MoveTo(Engine.Instance.GameState.Rooms[roomName]);
 		}
 
 		/// <summary>
@@ -100,7 +88,7 @@ namespace TagEngine.Entities
 		/// <param name="room">The room to check against</param>
 		public bool IsInRoom(Room room)
 		{
-			return currentRoom == room;
+			return CurrentRoom == room;
 		}
 
 		/// <summary>
@@ -109,7 +97,7 @@ namespace TagEngine.Entities
 		/// <param name="roomName">The name of the room to check against</param>
 		public bool IsInRoom(string roomName)
 		{
-			return currentRoom.Name == roomName;
+			return CurrentRoom.Name == roomName;
 		}
 
 		#endregion

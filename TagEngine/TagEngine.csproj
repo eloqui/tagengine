@@ -48,6 +48,8 @@
   <ItemGroup>
     <Compile Include="Input\Command.cs" />
     <Compile Include="Input\Commands\Debug.cs" />
+    <Compile Include="Input\Commands\Examine.cs" />
+    <Compile Include="Input\Commands\Look.cs" />
     <Compile Include="Input\Commands\Quit.cs" />
     <Compile Include="Input\Commands\GoRoom.cs" />
     <Compile Include="Entities\Ego.cs" />
@@ -57,7 +59,6 @@
     <Compile Include="Entities\Variable.cs" />
     <Compile Include="Input\Commands\Help.cs" />
     <Compile Include="Response.cs" />
-    <Compile Include="Data\Game.cs" />
     <Compile Include="Data\GameState.cs" />
     <Compile Include="Data\WordStore.cs" />
     <Compile Include="Input\Parser.cs" />

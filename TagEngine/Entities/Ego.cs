@@ -18,7 +18,7 @@ namespace TagEngine.Entities
 		{
 			get { return inventory; }
 		}
-		
+
 		/// <summary>
 		/// Constructor
 		/// </summary>
@@ -27,7 +27,30 @@ namespace TagEngine.Entities
 		public Ego(string title, string description)
 			: base("ego", title, description)
 		{
-			
+            inventory = new Inventory();
 		}
-	}
+
+        /// <summary>
+        /// Check if the character is carrying an item
+        /// </summary>
+        /// <param name="item"></param>
+        /// <returns></returns>
+        public bool IsCarrying(Item item)
+        {
+            return inventory.Contains(item);
+        }
+
+        /// <summary>
+        /// Check if the character is carrying an item
+        /// </summary>
+        /// <param name="itemName"></param>
+        /// <returns></returns>
+        public bool IsCarrying(string itemName)
+        {
+            var item = Engine.Instance.GameState.GetItem(itemName);
+            if (item == null) return false;
+
+            return inventory.Contains(item);
+        }
+    }
 }

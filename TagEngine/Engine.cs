@@ -8,42 +8,56 @@ using TagEngine.Data;
 
 namespace TagEngine
 {
+    /// <summary>
+    /// Directions of movement
+    /// </summary>
+    public enum Direction
+    {
+        North,
+        South,
+        East,
+        West,
+        Up,
+        Down
+    }
+
 	/// <summary>
 	/// The Engine class is responsible for setting up a game instance
 	/// and acting upon user input.
 	/// </summary>
 	public class Engine
 	{
-		#region Fields
-        
-		/// <summary>
-		/// The single instance of this class
-		/// </summary>
-		private static Engine instance;
+        #region Singleton
 
-		#endregion
+        /// <summary>
+        /// The single instance of this class
+        /// </summary>
+        private static Engine instance;
 
-		#region Properties
-
-		/// <summary>
-		/// The current GameState
-		/// </summary>
-		public GameState GameState { get; protected set; }
-        
-		/// <summary>
-		/// Get the single instance of this class
-		/// </summary>
-		public static Engine Instance
-		{
-			get {
+        /// <summary>
+        /// Get the single instance of this class
+        /// </summary>
+        public static Engine Instance
+        {
+            get
+            {
                 if (instance == null)
                 {
                     instance = new Engine();
                 }
                 return instance;
             }
-		}
+        }
 
+        #endregion
+
+        #region Fields & Properties
+
+        /// <summary>
+        /// The current GameState
+        /// </summary>
+        public GameState GameState { get; protected set; }
+        
 		#endregion
 
 		#region Constructor
@@ -75,14 +89,45 @@ namespace TagEngine
 		{
 			// tokenise and parse the input string
 			ParserResponse pr = Input.Parser.Parse(input);
-            
-            if (pr.Command == null) return new Response(pr.Message);
 
-            // act upon the input based upon the recognised command
-            var response = pr.Command.Process(this, pr.Tokens);
+            Response response;
+
+            if (pr.Command == null)
+            {
+                response = new Response();
+                response.AddMessage(pr.Message);
+            }
+            else
+            {
+                // act upon the input based upon the recognised command
+                response = pr.Command.Process(this, pr.Tokens);
+            }
 
             return response;
 		}
+
+        /// <summary>
+        /// Describe an entity
+        /// </summary>
+        /// <param name="item"></param>
+        /// <returns></returns>
+        public string Describe(ILookable item)
+        {
+            return item.Description;
+        }
+
+        /// <summary>
+        /// Examine an entity
+        /// </summary>
+        /// <param name="item"></param>
+        /// <param name="describeIfEmpty">If true, will return the short description if there is no extended description</param>
+        /// <returns></returns>
+        public string Examine(ILookable item, bool describeIfEmpty = false)
+        {
+            if (describeIfEmpty && String.IsNullOrWhiteSpace(item.ExtendedDescription)) return item.Description;
+
+            return item.ExtendedDescription;
+        }
 
 		#endregion
 

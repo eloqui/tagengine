@@ -1,7 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Text;
+using System.Linq;
 
 using NUnit.Framework;
 
@@ -29,15 +29,19 @@ namespace TagEngine.Input
 		/// </summary>
 		public TokenStatus Status;
 
+        public int Position;
+
 		/// <summary>
 		/// Constructor
 		/// </summary>
 		/// <param name="word">The word string</param>
 		/// <param name="status">The status of the word</param>
-		public Token(string word, TokenStatus status)
+        /// <param name="position">The position this token was in the input</param>
+		public Token(string word, TokenStatus status, int position)
 		{
-			this.Word = word;
-			this.Status = status;
+			Word = word;
+			Status = status;
+            Position = position;
 		}
 	}
 
@@ -46,55 +50,27 @@ namespace TagEngine.Input
 	/// </summary>
 	public class Tokeniser : IEnumerable
 	{
-		#region Fields
+		#region Fields & Properties
 
 		/// <summary>
 		/// The individual tokens
 		/// </summary>
 		private List<Token> tokens;
+        
+        /// <summary>
+        /// Count of words ignored
+        /// </summary>
+        public int IgnoreCount { get; protected set; } = 0;
 
-		/// <summary>
-		/// Count of ignored words
-		/// </summary>
-		private int ignoreCount = 0;
+        /// <summary>
+        /// Count of parsed words
+        /// </summary>
+        public int WordCount { get; protected set; } = 0;
 
-		/// <summary>
-		/// Index of the detected command word
-		/// </summary>
-		private Token command;
-
-		/// <summary>
-		/// Count of parsed words
-		/// </summary>
-		private int wordCount = 0;
-
-		#endregion
-
-		#region Properties
-
-		/// <summary>
-		/// Gets the count of words ignored
-		/// </summary>
-		public int IgnoreCount
-		{
-			get { return ignoreCount; }
-		}
-
-		/// <summary>
-		/// Gets the count of words parsed
-		/// </summary>
-		public int WordCount
-		{
-			get { return wordCount; }
-		}
-
-		/// <summary>
-		/// Get the command word
-		/// </summary>
-		public Token Command
-		{
-			get { return command; }
-		}
+        /// <summary>
+        /// The detected command word
+        /// </summary>
+        public Token Command { get; protected set; }
 
 		/// <summary>
 		/// Get a list of unrecognised tokens
@@ -103,11 +79,10 @@ namespace TagEngine.Input
 		{
 			get
 			{
-				List<Token> unrecognised = new List<Token>();
-				foreach (Token t in tokens)
-					if (t.Status == TokenStatus.Unrecognised)
-						unrecognised.Add(t);
-				return unrecognised;
+                var unrecognised = from token in tokens
+                                   where token.Status == TokenStatus.Unrecognised
+                                   select token;
+                return unrecognised.ToList();
 			}
 		}
 
@@ -118,10 +93,10 @@ namespace TagEngine.Input
 		{
 			get
 			{
-				foreach (Token t in tokens)
-					if (t.Status == TokenStatus.Direction)
-						return t.Word;
-				return null;
+                foreach (Token t in tokens)
+                    if (t.Status == TokenStatus.Direction)
+                        return t.Word;
+                return null;
 			}
 		}
 
@@ -160,6 +135,18 @@ namespace TagEngine.Input
 			return new TokenEnumerator(this);
 		}
 
+        /// <summary>
+        /// Get the token at a position
+        /// </summary>
+        /// <param name="position"></param>
+        /// <returns></returns>
+        public Token GetTokenAtPosition(int position)
+        {
+            if (position < 0 || position >= tokens.Count) throw new ArgumentOutOfRangeException("No token at position" + position.ToString());
+
+            return tokens[position];
+        }
+
 		#endregion
 
 		#region Implementation
@@ -170,43 +157,43 @@ namespace TagEngine.Input
 		/// <param name="elements">Array of split elements</param>
 		private void Tokenise(string[] elements)
 		{
-            var ws = new WordStore();
-
 			tokens = new List<Token>(elements.Length);
 
+            int position = 0;
 			foreach (string el in elements)
 			{
 				// ensure the word is in lower case and has no space
 				string element = el.ToLower().Trim();
 
-				if (element.Equals(String.Empty)) continue;
+				if (String.IsNullOrWhiteSpace(element)) continue;
 
-				if (ws.IsIgnored(element))
+				if (WordStore.IsIgnored(element))
 				{
 					// token added as an ignored word
-					tokens.Add(new Token(element, TokenStatus.Ignored));
-					ignoreCount++;
+					tokens.Add(new Token(element, TokenStatus.Ignored, position));
+					IgnoreCount++;
 				}
 				else
 				{
 					// this will add "back" as both a direction and a command
 					// but that doesn't matter (allows "go back" and "back")
-					if (ws.IsDirection(element))
+					if (WordStore.IsDirection(element))
 					{
-						tokens.Add(new Token(element, TokenStatus.Direction));
+						tokens.Add(new Token(element, TokenStatus.Direction, position));
 					}
-					else if (ws.IsCommand(element))
+					else if (CommandManager.IsCommand(element, position))
 					{
-						command = new Token(element, TokenStatus.Command);
-						tokens.Add(command);
+						Command = new Token(element, TokenStatus.Command, position);
+						tokens.Add(Command);
 					}
 					else
 					{
-						tokens.Add(new Token(element, TokenStatus.Unrecognised));
+						tokens.Add(new Token(element, TokenStatus.Unrecognised, position));
 					}
 				}
 
-				wordCount++;
+                position++; // TODO: these two vars could be consolidated, but does it look stupid passing WordCount as position?
+				WordCount++;
 			}
 			elements = null;
 		}

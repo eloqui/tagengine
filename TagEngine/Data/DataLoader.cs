@@ -8,7 +8,7 @@ namespace TagEngine.Data
 {
 	public static class DataLoader
 	{
-#if DEBUG
+//#if DEBUG
         /// <summary>
         /// Load up the hardcoded OddShip test game
         /// </summary>
@@ -46,30 +46,30 @@ namespace TagEngine.Data
             engine1 = new Room("engine1", "Port Engine", "the port engine", false);
             mysterious = new Room("mysterious", "Mysterious Cavity", "a mysterious cavity", false);
 
-            shuttle.SetExits(new Exits { { Room.Exit.East, airlock } }); // NSEW
-            qtrs1.SetExits(new Exits { { Room.Exit.East, corridor4 } });
-            airlock.SetExits(new Exits { { Room.Exit.East, garden }, { Room.Exit.West, shuttle } });
-            qtrs2.SetExits(new Exits { { Room.Exit.East, corridor5 } });
-            corridor4.SetExits(new Exits { { Room.Exit.South, garden }, { Room.Exit.East, no1qtrs }, { Room.Exit.West, qtrs1 } });
-            garden.SetExits(new Exits { { Room.Exit.North, corridor4 }, { Room.Exit.South, corridor5 }, { Room.Exit.East, corridor3 }, { Room.Exit.West, airlock } });
-            corridor5.SetExits(new Exits { { Room.Exit.North, garden }, { Room.Exit.East, capqtrs }, { Room.Exit.West, qtrs2 } });
-            no1qtrs.SetExits(new Exits { { Room.Exit.West, corridor4 } });
-            capqtrs.SetExits(new Exits { { Room.Exit.West, corridor5 } });
-            weapons.SetExits(new Exits { { Room.Exit.East, corridor2 } });
-            bridge.SetExits(new Exits { { Room.Exit.East, corridor1 } });
-            corridor2.SetExits(new Exits { { Room.Exit.South, corridor1 }, { Room.Exit.East, engineering2 }, { Room.Exit.West, weapons } });
-            corridor1.SetExits(new Exits { { Room.Exit.North, corridor2 }, { Room.Exit.South, corridor3 }, { Room.Exit.East, observation }, { Room.Exit.West, bridge } });
-            corridor3.SetExits(new Exits { { Room.Exit.North, corridor1 }, { Room.Exit.South, docking }, { Room.Exit.East, engineering1 }, { Room.Exit.West, garden } });
-            docking.SetExits(new Exits { { Room.Exit.North, corridor3 } });
-            engineering2.SetExits(new Exits { { Room.Exit.South, engineering1 }, { Room.Exit.East, tools }, { Room.Exit.West, corridor2 } });
-            observation.SetExits(new Exits { { Room.Exit.East, mess }, { Room.Exit.West, corridor1 } });
-            engineering1.SetExits(new Exits { { Room.Exit.North, engineering2 }, { Room.Exit.East, engine1 }, { Room.Exit.West, corridor3 } });
-            tools.SetExits(new Exits { { Room.Exit.West, engineering2 } });
-            mess.SetExits(new Exits { { Room.Exit.East, galley }, { Room.Exit.West, observation } });
-            engine2.SetExits(new Exits { { Room.Exit.South, engine1 } });
-            galley.SetExits(new Exits { { Room.Exit.West, mess } });
-            engine1.SetExits(new Exits { { Room.Exit.North, engine2 }, { Room.Exit.South, mysterious }, { Room.Exit.West, engineering1 } });
-            mysterious.SetExits(new Exits { { Room.Exit.North, engine1 } });
+            shuttle.SetExits(new Exits { { Direction.East, airlock } });
+            qtrs1.SetExits(new Exits { { Direction.East, corridor4 } });
+            airlock.SetExits(new Exits { { Direction.East, garden }, { Direction.West, shuttle } });
+            qtrs2.SetExits(new Exits { { Direction.East, corridor5 } });
+            corridor4.SetExits(new Exits { { Direction.South, garden }, { Direction.East, no1qtrs }, { Direction.West, qtrs1 } });
+            garden.SetExits(new Exits { { Direction.North, corridor4 }, { Direction.South, corridor5 }, { Direction.East, corridor3 }, { Direction.West, airlock } });
+            corridor5.SetExits(new Exits { { Direction.North, garden }, { Direction.East, capqtrs }, { Direction.West, qtrs2 } });
+            no1qtrs.SetExits(new Exits { { Direction.West, corridor4 } });
+            capqtrs.SetExits(new Exits { { Direction.West, corridor5 } });
+            weapons.SetExits(new Exits { { Direction.East, corridor2 } });
+            bridge.SetExits(new Exits { { Direction.East, corridor1 } });
+            corridor2.SetExits(new Exits { { Direction.South, corridor1 }, { Direction.East, engineering2 }, { Direction.West, weapons } });
+            corridor1.SetExits(new Exits { { Direction.North, corridor2 }, { Direction.South, corridor3 }, { Direction.East, observation }, { Direction.West, bridge } });
+            corridor3.SetExits(new Exits { { Direction.North, corridor1 }, { Direction.South, docking }, { Direction.East, engineering1 }, { Direction.West, garden } });
+            docking.SetExits(new Exits { { Direction.North, corridor3 } });
+            engineering2.SetExits(new Exits { { Direction.South, engineering1 }, { Direction.East, tools }, { Direction.West, corridor2 } });
+            observation.SetExits(new Exits { { Direction.East, mess }, { Direction.West, corridor1 } });
+            engineering1.SetExits(new Exits { { Direction.North, engineering2 }, { Direction.East, engine1 }, { Direction.West, corridor3 } });
+            tools.SetExits(new Exits { { Direction.West, engineering2 } });
+            mess.SetExits(new Exits { { Direction.East, galley }, { Direction.West, observation } });
+            engine2.SetExits(new Exits { { Direction.South, engine1 } });
+            galley.SetExits(new Exits { { Direction.West, mess } });
+            engine1.SetExits(new Exits { { Direction.North, engine2 }, { Direction.South, mysterious }, { Direction.West, engineering1 } });
+            mysterious.SetExits(new Exits { { Direction.North, engine1 } });
             mysterious.IsTransporter = true;
 
             shuttle.ExtendedDescription = "A cramped, but comfortable chair sits before a glistening control panel.";
@@ -96,6 +96,8 @@ namespace TagEngine.Data
             observation.ExtendedDescription = "It's a long, spacious room. The most striking feature is the huge ceiling, made of some transparent material. Through it, in the distance, you can make out what appears to be a space station.";
             garden.ExtendedDescription = "A huge space lies around you, filled with plants and smelling wonderful. A number of paths wind their way through the planting boxes. Fine water mist is being sprayed in some places.";
 
+            docking.AddFeature(new RoomFeature("airlock", "Airlock", "It's a large round door, metal, and heavy, with an ominous glowing red light above it."));
+            docking.AddFeature(new RoomFeature("light", "Airlock Light", "The light glows an ominous red, suggesting that you probably don't want to open the door."));
             #endregion
 
             #region Items
@@ -714,6 +716,6 @@ namespace TagEngine.Data
 
             return gs;
         }
-#endif
+//#endif
     }
 }

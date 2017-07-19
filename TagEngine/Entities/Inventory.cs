@@ -10,11 +10,10 @@ namespace TagEngine.Entities
     [Serializable]
 	public class Inventory : List<Item>
 	{
+        #region Methods
 
 
-		#region Methods
 
-
-		#endregion
-	}
+        #endregion
+    }
 }
