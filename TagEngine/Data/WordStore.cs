@@ -11,6 +11,8 @@ namespace TagEngine.Data
 	/// </summary>
 	public static class WordStore
 	{
+        // TODO: refactor this shit out of here. It was a good idea but it's not working.
+
         /// <summary>
         /// Words that are ignored in the input. (e.g. conjunctions, prepositions, etc.)
         /// </summary>
@@ -71,6 +73,7 @@ namespace TagEngine.Data
                 case Direction.West:  return directions[3];
                 case Direction.Up:    return directions[4];
                 case Direction.Down:  return directions[5];
+                case Direction.Back:  return directions[6];
             }
 
             // should never get here
@@ -95,6 +98,7 @@ namespace TagEngine.Data
                 case "west":  return Direction.West;
                 case "up":    return Direction.Up;
                 case "down":  return Direction.Down;
+                case "back":  return Direction.Back;
              }
 
             throw new ArgumentOutOfRangeException(word + " is not a known direction");

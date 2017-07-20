@@ -47,9 +47,14 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Input\Command.cs" />
+    <Compile Include="Input\Commands\Combine.cs" />
     <Compile Include="Input\Commands\Debug.cs" />
+    <Compile Include="Input\Commands\Drop.cs" />
     <Compile Include="Input\Commands\Examine.cs" />
+    <Compile Include="Input\Commands\Give.cs" />
+    <Compile Include="Input\Commands\Inventory.cs" />
     <Compile Include="Input\Commands\Look.cs" />
+    <Compile Include="Input\Commands\PickUp.cs" />
     <Compile Include="Input\Commands\Quit.cs" />
     <Compile Include="Input\Commands\GoRoom.cs" />
     <Compile Include="Entities\Ego.cs" />
@@ -58,6 +63,8 @@
     <Compile Include="Entities\MovableEntity.cs" />
     <Compile Include="Entities\Variable.cs" />
     <Compile Include="Input\Commands\Help.cs" />
+    <Compile Include="Input\Commands\Talk.cs" />
+    <Compile Include="Input\Commands\Use.cs" />
     <Compile Include="Response.cs" />
     <Compile Include="Data\GameState.cs" />
     <Compile Include="Data\WordStore.cs" />

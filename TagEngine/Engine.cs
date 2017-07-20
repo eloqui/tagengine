@@ -18,7 +18,8 @@ namespace TagEngine
         East,
         West,
         Up,
-        Down
+        Down,
+        Back
     }
 
 	/// <summary>

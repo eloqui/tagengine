@@ -27,7 +27,7 @@ namespace TagEngine.Entities
 		public Ego(string title, string description)
 			: base("ego", title, description)
 		{
-            inventory = new Inventory();
+            inventory = new Inventory(20); // TODO: allow changing the max weight carryable
 		}
 
         /// <summary>

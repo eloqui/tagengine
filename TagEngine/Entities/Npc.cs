@@ -78,10 +78,12 @@ namespace TagEngine.Entities
 		public Npc(string name, string title, string description)
 			: base(name, title, description)
 		{
-			inventory = new Inventory();
-			dialogue = new List<string>();
-			dialogue.Add("Hello there!");
-		}
+			inventory = new Inventory(20); // TODO: allow setting inventory weight
+            dialogue = new List<string>
+            {
+                "Hello there!"
+            };
+        }
 
 		#endregion
 

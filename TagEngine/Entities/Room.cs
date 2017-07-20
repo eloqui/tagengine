@@ -335,13 +335,25 @@ namespace TagEngine.Entities
         }
 
         /// <summary>
+        /// Check if this room has a particular exit
+        /// </summary>
+        /// <param name="exit"></param>
+        /// <returns></returns>
+        public bool HasExit(Direction exit)
+        {
+            return exitKeys.ContainsKey(exit);
+        }
+
+        /// <summary>
         /// Get the next room in a particular direction
         /// </summary>
         /// <param name="direction">The exit direction</param>
         /// <returns>The next room in the given direction or null if no room that way</returns>
         public Room GetNextRoom(Direction direction)
         {
-            return this.exitKeys[direction] ?? null;
+            if (!HasExit(direction)) return null;
+
+            return this.exitKeys[direction];
         }
 
         /// <summary>
