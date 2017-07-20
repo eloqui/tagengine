@@ -13,9 +13,25 @@ namespace TagEngine.Input.Commands
 
         public override Response Process(Engine engine, Tokeniser tokens)
         {
-            StringBuilder sb = new StringBuilder();
-            sb.Append("TODO: game specific help here");
-            sb.Append(Environment.NewLine);
+            if (tokens.WordCount > 1)
+            {
+                // asking for help with some command
+                try
+                {
+                    var c = CommandManager.GetCommand(tokens.GetTokenAtPosition(1).Word);
+                    var text = c.GetHelpText();
+                    if (!String.IsNullOrEmpty(text))
+                    {
+                        return new Response(text);
+                    }
+                }
+                catch (CommandNotFoundException cnfe) { }
+            }
+
+            var sb = new StringBuilder();
+
+            sb.Append("TODO: game specific help here" + Environment.NewLine);
+            
             sb.Append("Available command words are:" + Environment.NewLine);
             
             sb.Append(" ");

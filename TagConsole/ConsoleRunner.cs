@@ -52,9 +52,9 @@ namespace TagConsole
             engine.LoadGame(DataLoader.GetTestGame());
             
             WriteLine(engine.GameState.WelcomeMessage);
-			//WriteLine(engine.Describe(engine.CurrentRoom));
+            WriteLine(engine.Describe(engine.GameState.Ego.CurrentRoom));
 
-			bool finished = false;
+            bool finished = false;
 			while (!finished)
 			{
 				string input = null;

@@ -19,6 +19,13 @@ namespace TagEngine.Input
         public abstract Response Process(Engine engine, Tokeniser tokens);
 
         /// <summary>
+        /// Get text to display when help is requested for this command
+        /// </summary>
+        /// <returns></returns>
+        // TODO: this maybe should return a Response? or some method for prettification
+        public virtual string GetHelpText() { return null; }
+
+        /// <summary>
         /// The command primary word
         /// </summary>
         public string Word { get; protected set; }

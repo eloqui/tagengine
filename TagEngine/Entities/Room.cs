@@ -228,6 +228,8 @@ namespace TagEngine.Entities
         /// <returns></returns>
         public bool HasFeature(string featureName)
         {
+            if (String.IsNullOrEmpty(featureName)) return false;
+
             return Features.ContainsKey(featureName);
         }
 
@@ -238,6 +240,8 @@ namespace TagEngine.Entities
         /// <returns></returns>
         public bool HasFeature(RoomFeature feature)
         {
+            if (feature == null) return false;
+
             return Features.ContainsValue(feature);
         }
 
@@ -278,6 +282,8 @@ namespace TagEngine.Entities
         /// <returns>True if the room has the specified item</returns>
         public bool HasItem(Item item)
         {
+            if (item == null) return false;
+
             return this.items.Contains(item);
         }
 
@@ -312,6 +318,8 @@ namespace TagEngine.Entities
         /// <returns>True if the room has the specified NPC</returns>
         public bool HasNpc(Npc npc)
         {
+            if (npc == null) return false;
+
             return this.npcs.Contains(npc);
         }
 

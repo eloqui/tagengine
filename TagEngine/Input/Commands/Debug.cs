@@ -8,15 +8,24 @@ namespace TagEngine.Input.Commands
 {
     class Debug : Command
     {
+        /// <summary>
+        /// List of subcommands the debug command handles
+        /// </summary>
+        private static readonly string[] subCommands = {
+                "variables",
+                "setvariable",
+                "rooms"
+            };
+
         public Debug() : base("debug", null, false) { }
+
+        public override string GetHelpText()
+        {
+            return "Does things to the insides." + Environment.NewLine + GetDebugCommands();
+        }
 
         public override Response Process(Engine engine, Tokeniser tokens)
         {
-            List<string> subCommands = new List<string> {
-                "variables",
-                "setvariable"
-            };
-
             Response r = new Response();
 
             if (tokens.WordCount > 1)
@@ -47,22 +56,32 @@ namespace TagEngine.Input.Commands
 
                     // an unknown debug command
                     default:
-                        r.AddMessage("Unknown debug command: " + command, ResponseMessageType.Error);
+                        if (subCommands.Contains(command))
+                        {
+                            r.AddMessage("Debug command >" + command + "< not yet implemented.", ResponseMessageType.Warning);
+                        }
+                        else
+                        {
+                            r.AddMessage("Unknown debug command: >" + command + "<", ResponseMessageType.Error);
+                        }
                         break;
                 }
-
-                
             }
             
+            // show list of available debug subcommands
+            r.AddMessage(GetDebugCommands());
+            return r;
+        }
+
+        private string GetDebugCommands()
+        {
             var sb = new StringBuilder();
             sb.Append("Debug commands:" + Environment.NewLine);
             foreach (var c in subCommands)
             {
                 sb.Append(" " + c + Environment.NewLine);
             }
-            r.AddMessage(sb.ToString());
-
-            return r;
+            return sb.ToString();
         }
     }
 }

@@ -32,7 +32,7 @@ namespace TagEngine
         /// <summary>
         /// The message to display in the Client
         /// </summary>
-        public string Message;
+        public string Message; // TODO: add some sort of markup for colours/etc.
 
         /// <summary>
         /// The type is an indication to the Client of how this message might be displayed/handled

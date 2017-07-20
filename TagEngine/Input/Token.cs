@@ -29,6 +29,9 @@ namespace TagEngine.Input
 		/// </summary>
 		public TokenStatus Status;
 
+        /// <summary>
+        /// The position of this token in the input line (0-based)
+        /// </summary>
         public int Position;
 
 		/// <summary>
@@ -43,6 +46,28 @@ namespace TagEngine.Input
 			Status = status;
             Position = position;
 		}
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="x"></param>
+        /// <param name="y"></param>
+        /// <returns></returns>
+        public static bool operator ==(Token x, Token y)
+        {
+            return (x.Word == y.Word && x.Status == y.Status && x.Position == y.Position);
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="x"></param>
+        /// <param name="y"></param>
+        /// <returns></returns>
+        public static bool operator !=(Token x, Token y)
+        {
+            return !(x.Word == y.Word && x.Status == y.Status && x.Position == y.Position);
+        }
 	}
 
 	/// <summary>
@@ -181,7 +206,8 @@ namespace TagEngine.Input
 					{
 						tokens.Add(new Token(element, TokenStatus.Direction, position));
 					}
-					else if (CommandManager.IsCommand(element, position))
+                    // this is a command, but only accept the first command found
+					else if (CommandManager.IsCommand(element, position) && Command == default(Token))
 					{
 						Command = new Token(element, TokenStatus.Command, position);
 						tokens.Add(Command);

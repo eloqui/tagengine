@@ -92,12 +92,12 @@ namespace TagEngine.Data
             Npcs.Add(npc.Name, npc);
         }
 
-        public void SetEgo(Ego ego, Room currentRoom = null)
+        public void SetEgo(Ego ego, Room inRoom = null)
         {
             if (IsSetupFinalised) throw new InvalidOperationException("Cannot set Ego after game state setup is finalised");
 
             Ego = ego;
-            if (currentRoom != null) Ego.MoveTo(currentRoom);
+            if (inRoom != null) Ego.MoveTo(inRoom);
         }
 
         public void SetWelcomeMessage(string welcomeMessage)
@@ -123,6 +123,8 @@ namespace TagEngine.Data
         /// <returns></returns>
         public bool IsValidItem(string itemName)
         {
+            if (String.IsNullOrEmpty(itemName)) return false;
+
             return Items.ContainsKey(itemName);
         }
 
@@ -133,6 +135,8 @@ namespace TagEngine.Data
         /// <returns></returns>
         public bool IsValidItem(Item item)
         {
+            if (item == null) return false;
+
             return Items.ContainsValue(item);
         }
 
@@ -155,6 +159,8 @@ namespace TagEngine.Data
         /// <returns></returns>
         public bool IsValidNpc(string npcName)
         {
+            if (String.IsNullOrEmpty(npcName)) return false;
+
             return Npcs.ContainsKey(npcName);
         }
 
@@ -165,6 +171,8 @@ namespace TagEngine.Data
         /// <returns></returns>
         public bool IsValidNpc(Npc npc)
         {
+            if (npc == null) return false;
+
             return Npcs.ContainsValue(npc);
         }
 
