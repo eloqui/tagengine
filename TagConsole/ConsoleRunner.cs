@@ -46,6 +46,13 @@ namespace TagConsole
 		/// </summary>
 		public void Play()
 		{
+            // check we have a console
+            if (!(Console.In is System.IO.StreamReader)) {
+                // if you get here, ensure the project is set to run in an external console
+                throw new ApplicationException("Cannot run without a console to work in!");
+            }
+
+            // make things happen
             var engine = Engine.Instance;
 
             // TODO: remove this debug guff
@@ -137,6 +144,8 @@ namespace TagConsole
 		/// <returns></returns>
 		private string WrapLines(string longText)
 		{
+            if (this.consoleWidth == 0) return longText;
+
 			int start = 0; // start of line
 			int index = this.consoleWidth - 1; // end of line
 			int backTrack = 0; // how far back from EOL to first space

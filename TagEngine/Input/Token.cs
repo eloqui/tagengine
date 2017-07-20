@@ -144,6 +144,11 @@ namespace TagEngine.Input
 		/// <param name="delimiters">Delimiters to use when splitting source into tokens</param>
 		public Tokeniser(string source, char[] delimiters)
 		{
+            if (String.IsNullOrWhiteSpace(source)) {
+                Tokenise(new string[]{});
+                return;
+            }
+
 			// Parse the string into tokens:
 			Tokenise(source.Split(delimiters));
 		}
