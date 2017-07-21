@@ -8,7 +8,7 @@ namespace TagEngine.Input
     /// <summary>
     /// Base class for commands
     /// </summary>
-    public abstract class Command
+    public abstract class Command : ICommand
     {
         /// <summary>
         /// Process the command
@@ -78,7 +78,7 @@ namespace TagEngine.Input
         /// <summary>
         /// All command words and the command they run
         /// </summary>
-        private static SortedDictionary<string, Command> commands = null;
+        private static SortedDictionary<string, ICommand> commands = null;
 
         /// <summary>
         /// All primary command words
@@ -90,19 +90,20 @@ namespace TagEngine.Input
         /// </summary>
         public static void Initialise()
         {
-            commands = new SortedDictionary<string, Command>(StringComparer.CurrentCultureIgnoreCase);
+            commands = new SortedDictionary<string, ICommand>(StringComparer.CurrentCultureIgnoreCase);
             primaryCommands = new SortedSet<string>(StringComparer.CurrentCultureIgnoreCase);
 
             // detect all children of the Command class, and add them to the dictionary
             var subClasses =
                 from assembly in AppDomain.CurrentDomain.GetAssemblies()
                 from type in assembly.GetTypes()
-                where type.IsSubclassOf(typeof(Command))
+                //where type.IsSubclassOf(typeof(ICommand))
+                where typeof(ICommand).IsAssignableFrom(type) && type.IsClass && !type.IsAbstract
                 select type;
 
             foreach (var type in subClasses)
             {
-                var c = (Command)Activator.CreateInstance(type);
+                var c = (ICommand)Activator.CreateInstance(type);
                 primaryCommands.Add(c.Word);
                 foreach (var word in c.GetCommandWords())
                 {
@@ -139,7 +140,7 @@ namespace TagEngine.Input
         /// </summary>
         /// <param name="command"></param>
         /// <returns></returns>
-        public static Command GetCommand(string command)
+        public static ICommand GetCommand(string command)
         {
             if (String.IsNullOrEmpty(command))
             {

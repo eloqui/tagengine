@@ -1,14 +1,17 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using TagEngine.Data;
 
 namespace TagEngine.Scripting.Conditions
 {
-	class VariableCondition : Condition
+	class VariableCondition : Condition<string, object>
 	{
-		protected override bool Check(TagEngine.Data.GameState gs)
+        public VariableCondition(string variableName, object value) : base("variable", variableName, value) { }
+
+        public override bool TestCondition(GameState gs)
 		{
-			return gs.Variables.GetVariable((string)Data) == Val;
+			return gs.Variables.GetVariable(Param1) == Param2;
 		}
 	}
 }

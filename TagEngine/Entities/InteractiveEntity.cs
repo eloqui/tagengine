@@ -26,19 +26,19 @@ namespace TagEngine.Entities
 		private string extendedDescription = "";
 
 		/// <summary>
-		/// Whether this object can be carried by the user
+		/// Whether this item can be seen by the user
 		/// </summary>
 		protected bool isAccessible = true;
 
 		/// <summary>
-		/// Whether this object can be examined by the user
+		/// Whether this item can be examined by the user
 		/// </summary>
 		protected bool isExaminable = true;
 
 		/// <summary>
 		/// The entity's variables
 		/// </summary>
-		protected Variables variables;
+		//protected Variables variables;
 
 		#endregion
 
@@ -92,10 +92,10 @@ namespace TagEngine.Entities
 		/// <summary>
 		/// Gets the entity's variables
 		/// </summary>
-		public virtual Variables Variables
-		{
-			get { return variables; }
-		}
+		//public virtual Variables Variables
+		//{
+		//	get { return variables; }
+		//}
 
 		#endregion
 

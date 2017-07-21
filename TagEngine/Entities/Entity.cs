@@ -13,29 +13,19 @@ namespace TagEngine.Entities
         /// <summary>
         /// Unique identifier for this object
         /// </summary>
-        public Guid Id
-        {
-            get;
-            protected set;
-        }
+        public Guid Id { get; protected set; }
 
         /// <summary>
         /// Internal name of this object
         /// </summary>
-        public string Name
-        {
-            get;
-            protected set;
-        }
+        public string Name { get; protected set; }
 
         /// <summary>
         /// Constructor
         /// </summary>
         /// <param name="name">The name of this entity</param>
-        public Entity(string name)
+        public Entity(string name) : this(name, Guid.NewGuid())
         {
-            this.Name = name;
-            this.Id = Guid.NewGuid();
         }
 
         /// <summary>

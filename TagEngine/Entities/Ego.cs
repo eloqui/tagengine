@@ -4,20 +4,12 @@ using System.Text;
 
 namespace TagEngine.Entities
 {
-	public class Ego : MovableEntity
+	public class Ego : MovableEntity, IHasInventory
 	{
-		/// <summary>
-		/// The player's inventory
-		/// </summary>
-		private Inventory inventory;
-
-		/// <summary>
-		/// Get the player's inventory
-		/// </summary>
-		public Inventory Inventory
-		{
-			get { return inventory; }
-		}
+        /// <summary>
+        /// The player's inventory
+        /// </summary>
+        public Inventory Inventory { get; protected set; }
 
 		/// <summary>
 		/// Constructor
@@ -27,7 +19,7 @@ namespace TagEngine.Entities
 		public Ego(string title, string description)
 			: base("ego", title, description)
 		{
-            inventory = new Inventory(20); // TODO: allow changing the max weight carryable
+            Inventory = new Inventory(20); // TODO: allow changing the max weight carryable
 		}
 
         /// <summary>
@@ -37,7 +29,7 @@ namespace TagEngine.Entities
         /// <returns></returns>
         public bool IsCarrying(Item item)
         {
-            return inventory.Contains(item);
+            return Inventory.HasItem(item);
         }
 
         /// <summary>
@@ -47,10 +39,7 @@ namespace TagEngine.Entities
         /// <returns></returns>
         public bool IsCarrying(string itemName)
         {
-            var item = Engine.Instance.GameState.GetItem(itemName);
-            if (item == null) return false;
-
-            return inventory.Contains(item);
+            return Inventory.HasItem(itemName);
         }
     }
 }

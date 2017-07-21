@@ -37,7 +37,7 @@ namespace TagEngine.Input.Commands
                             }
 
                             // add the item to inventory
-                            ego.Inventory.Add(item);
+                            ego.Inventory.AddItem(item);
                             ego.CurrentRoom.RemoveItem(item);
 
                             if (!String.IsNullOrEmpty(item.PickupMessage))

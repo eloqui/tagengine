@@ -68,7 +68,26 @@ namespace TagEngine.Input
         {
             return !(x.Word == y.Word && x.Status == y.Status && x.Position == y.Position);
         }
-	}
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="obj"></param>
+        /// <returns></returns>
+        public override bool Equals(object obj)
+        {
+            return base.Equals(obj);
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
+        public override int GetHashCode()
+        {
+            return base.GetHashCode();
+        }
+    }
 
 	/// <summary>
 	/// Collection of tokens
@@ -160,10 +179,18 @@ namespace TagEngine.Input
 		/// <summary>
 		/// Declaration of the GetEnumerator() method required by IEnumerable
 		/// </summary>
-		public IEnumerator GetEnumerator()
+		public IEnumerator<Token> GetEnumerator()
 		{
 			return new TokenEnumerator(this);
-		}
+        }
+        private IEnumerator GetEnumerator1()
+        {
+            return this.GetEnumerator();
+        }
+        IEnumerator IEnumerable.GetEnumerator()
+        {
+            return GetEnumerator1();
+        }
 
         /// <summary>
         /// Get the token at a position
@@ -234,44 +261,41 @@ namespace TagEngine.Input
 		/// <summary>
 		/// Inner class implementing IEnumerator interface
 		/// </summary>
-		private class TokenEnumerator : IEnumerator
+		internal class TokenEnumerator : IEnumerator<Token>
 		{
-			private int position = -1;
+			private int position;
 			private Tokeniser t;
 
-			public TokenEnumerator(Tokeniser t)
+            public Token Current => t.tokens[position];
+            object IEnumerator.Current => Current;
+
+            public TokenEnumerator(Tokeniser t)
 			{
 				this.t = t;
+                position = -1;
 			}
 
-			// Declare the MoveNext method required by IEnumerator:
-			public bool MoveNext()
+            /// <summary>
+            /// Declare the MoveNext method required by IEnumerator:
+            /// </summary>
+            public bool MoveNext()
 			{
-				if (position < t.tokens.Count - 1)
-				{
-					position++;
-					return true;
-				}
-				else
+				if (++position >= t.tokens.Count)
 				{
 					return false;
 				}
+				return true;
 			}
 
-			// Declare the Reset method required by IEnumerator:
-			public void Reset()
+            /// <summary>
+            /// Declare the Reset method required by IEnumerator:
+            /// </summary>
+            public void Reset()
 			{
 				position = -1;
 			}
 
-			// Declare the Current property required by IEnumerator:
-			public object Current
-			{
-				get
-				{
-					return t.tokens[position];
-				}
-			}
+			void IDisposable.Dispose() { }
 		}
 	}
 

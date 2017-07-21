@@ -10,10 +10,6 @@ namespace TagEngine.Entities
 	[Serializable]
 	public class MovableEntity : InteractiveEntity, IMovable
 	{
-		#region Fields
-        
-		#endregion
-
 		#region Properties
 
 		/// <summary>

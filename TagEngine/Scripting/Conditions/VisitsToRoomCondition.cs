@@ -3,14 +3,17 @@ using System.Collections.Generic;
 using System.Text;
 
 using TagEngine.Data;
+using TagEngine.Entities;
 
 namespace TagEngine.Scripting.Conditions
 {
-	class VisitsToRoomCondition : Condition
+	class VisitsToRoomCondition : Condition<Room, int>
 	{
-		protected override bool Check(GameState gs)
+        public VisitsToRoomCondition(Room room, int visits) : base("visitstoroom", room, visits) { }
+
+        public override bool TestCondition(GameState gs)
 		{
-			return gs.Rooms.ContainsKey((string)Data) && gs.Rooms[(string)Data].NumVisits == (int)Val;
+            return Param1.NumVisits == Param2;
 		}
 	}
 }

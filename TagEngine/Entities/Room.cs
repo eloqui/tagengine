@@ -401,11 +401,15 @@ namespace TagEngine.Entities
 
         #region Implementation
 
+        /// <summary>
+        /// Get a list of exits from this room
+        /// </summary>
+        /// <returns></returns>
         private string GetExitString()
 		{
             if (exitKeys.Count == 0) return "";
 
-            StringBuilder returnString = new StringBuilder();
+            var returnString = new StringBuilder();
             returnString.Append("Exits:");
             foreach (var exit in exitKeys)
             {
@@ -414,20 +418,28 @@ namespace TagEngine.Entities
             return returnString.ToString();
 		}
 
+        /// <summary>
+        /// Get a list of NPCs present in the room
+        /// </summary>
+        /// <returns></returns>
 		private string GetNpcsString()
 		{
 			if (npcs.Count == 0) return "";
 
-			StringBuilder returnString = new StringBuilder();
+			var returnString = new StringBuilder();
 			returnString.Append("Some people are here:");
-			foreach (Npc npc in npcs)
+			foreach (var npc in npcs)
 			{
 				returnString.Append(" " + npc.Title);
 			}
-			returnString.Append("\n");
+			returnString.Append(Environment.NewLine);
 			return returnString.ToString();
 		}
 
+        /// <summary>
+        /// Get a list of items in this room
+        /// </summary>
+        /// <returns></returns>
 		private string GetItemsString()
 		{
 			if (items.Count == 0) return "";
@@ -438,23 +450,19 @@ namespace TagEngine.Entities
 			{
 				returnString.Append(" " + item.Title);
 			}
-			returnString.Append("\n");
+			returnString.Append(Environment.NewLine);
 			return returnString.ToString();
 		}
 
 		#endregion
-	}
 
-    public static class RoomExtensions
-    {
         /// <summary>
-        /// Get the direction string for a Room.Exit
+        /// Get a Room by casting from its name
         /// </summary>
-        /// <param name="exit">The exit direction</param>
-        /// <returns>The direction string</returns>
-        public static string GetExitDirection(this Direction exit)
+        /// <param name="roomName"></param>
+        public static explicit operator Room(string roomName)
         {
-            return WordStore.GetDirectionWord(exit);
+            return Engine.Instance.GameState.GetRoom(roomName);
         }
-    }
+	}
 }

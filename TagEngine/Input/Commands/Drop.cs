@@ -26,7 +26,7 @@ namespace TagEngine.Input.Commands
                         if (ego.IsCarrying(item))
                         {
                             // remove the item from player inv and put it in the current room
-                            ego.Inventory.Remove(item);
+                            ego.Inventory.RemoveItem(item);
                             ego.CurrentRoom.AddItem(item);
                             
                             return new Response("You carefully drop the " + item.Title + ".");

@@ -6,41 +6,82 @@ using TagEngine.Data;
 
 namespace TagEngine.Scripting
 {
+    /// <summary>
+    /// A condition with 1 parameter that must be met before an action can take place occur
+    /// </summary>
+    abstract public class Condition<TParam1> : ICondition
+    {
+        /// <summary>
+        /// Name of this condition
+        /// </summary>
+        public string Name { get; protected set; }
+
+        /// <summary>
+        /// The first parameter
+        /// </summary>
+		public TParam1 Param1 { get; protected set; }
+
+        /// <summary>
+        /// Constructor
+        /// </summary>
+        /// <param name="name"></param>
+        /// <param name="param1"></param>
+        public Condition(string name, TParam1 param1)
+        {
+            Name = name;
+            Param1 = param1;
+        }
+
+        /// <summary>
+        /// Test this condition based on the current game state
+        /// </summary>
+        /// <param name="gs"></param>
+        /// <returns></returns>
+        public abstract bool TestCondition(GameState gs);
+    }
+
 	/// <summary>
-	/// A condition that must be met before an action can take place occur
+	/// A condition with 2 parameter that must be met before an action can take place occur
 	/// </summary>
-	abstract public class Condition
+	abstract public class Condition<TParam1, TParam2> : Condition<TParam1>
 	{
-		private object data;
+        /// <summary>
+        /// The value to check
+        /// </summary>
+		public TParam2 Param2 { get; protected set; }
 
-		private object val;
-
-		public object Data
-		{
-			get { return data; }
-		}
-
-		public object Val
-		{
-			get { return val; }
-		}
-
-		/// <summary>
-		/// Test this condition based on the current game state
-		/// </summary>
-		/// <param name="gs"></param>
-		/// <returns></returns>
-		public bool TestCondition(GameState gs, object data, object val)
-		{
-			this.data = data;
-			this.val = val;
-			return Check(gs);
-		}
-
-		/// <summary>
-		/// Get whether this condition is met
-		/// </summary>
-		/// <returns>Whether the condition is met</returns>
-		abstract protected bool Check(GameState gs);
+        /// <summary>
+        /// Constructor
+        /// </summary>
+        /// <param name="name"></param>
+        /// <param name="param1"></param>
+        /// <param name="param2"></param>
+        public Condition(string name, TParam1 param1, TParam2 param2) : base(name, param1)
+        {
+            Param2 = param2;
+        }
 	}
+
+    /// <summary>
+	/// A condition with 3 parameters that must be met before an action can take place occur
+	/// </summary>
+	abstract public class Condition<TParam1, TParam2, TParam3> : Condition<TParam1, TParam2>
+    {
+        /// <summary>
+        /// The 3rd parameter
+        /// </summary>
+        public TParam3 Param3 { get; protected set; }
+
+        /// <summary>
+        /// Constructor
+        /// </summary>
+        /// <param name="name"></param>
+        /// <param name="param1"></param>
+        /// <param name="param2"></param>
+        /// <param name="param3"></param>
+        public Condition(string name, TParam1 param1, TParam2 param2, TParam3 param3) : base(name, param1, param2)
+        {
+            Param3 = param3;
+        }
+    }
 }

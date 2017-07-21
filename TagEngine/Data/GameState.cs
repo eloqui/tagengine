@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 
 using TagEngine.Entities;
+using TagEngine.Scripting;
 
 namespace TagEngine.Data
 {
@@ -25,6 +26,11 @@ namespace TagEngine.Data
         /// Collection of all the NPCs in the game
         /// </summary>
         public Entities<Npc> Npcs { get; protected set; }
+
+        /// <summary>
+        /// Collection of all the occurrences in the game
+        /// </summary>
+        public Entities<Occurrence> Occurrences { get; protected set; }
 
         /// <summary>
         /// Collection of variables
@@ -57,6 +63,7 @@ namespace TagEngine.Data
             Items = new Entities<Item>();
             Rooms = new Entities<Room>();
             Npcs = new Entities<Npc>();
+            Occurrences = new Entities<Occurrence>();
             Variables = new Variables();
 
             WelcomeMessage = "Welcome!";
@@ -114,6 +121,42 @@ namespace TagEngine.Data
         public void SetCurrentLocation(Room room)
         {
             Ego.MoveTo(room);
+        }
+
+        /// <summary>
+        /// Check if a room name is a valid room
+        /// </summary>
+        /// <param name="roomName"></param>
+        /// <returns></returns>
+        public bool IsValidRoom(string roomName)
+        {
+            if (String.IsNullOrEmpty(roomName)) return false;
+
+            return Rooms.ContainsKey(roomName);
+        }
+
+        /// <summary>
+        /// Check if a room is a valid room
+        /// </summary>
+        /// <param name="room"></param>
+        /// <returns></returns>
+        public bool IsValidRoom(Room room)
+        {
+            if (room == null) return false;
+
+            return Rooms.ContainsValue(room);
+        }
+
+        /// <summary>
+        /// Get a room by name
+        /// </summary>
+        /// <param name="roomName"></param>
+        /// <returns></returns>
+        public Room GetRoom(string roomName)
+        {
+            if (!IsValidRoom(roomName)) return null;
+
+            return Rooms[roomName];
         }
 
         /// <summary>

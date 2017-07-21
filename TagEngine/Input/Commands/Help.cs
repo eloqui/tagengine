@@ -25,7 +25,7 @@ namespace TagEngine.Input.Commands
                         return new Response(text);
                     }
                 }
-                catch (CommandNotFoundException cnfe) { }
+                catch (CommandNotFoundException) { }
             }
 
             var sb = new StringBuilder();

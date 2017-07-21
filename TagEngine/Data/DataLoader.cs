@@ -2,6 +2,9 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using TagEngine.Entities;
+using TagEngine.Scripting;
+using TagEngine.Scripting.Actions;
+using TagEngine.Scripting.Conditions;
 using static TagEngine.Entities.Room;
 
 namespace TagEngine.Data
@@ -350,7 +353,15 @@ namespace TagEngine.Data
 
             #region Unlock doors with Terminal
 
-            //// use the terminal in observation, with accesscard unlocks three doors
+            // use the terminal in observation, with accesscard unlocks three doors
+            Occurrence obsterminal = new Occurrence("obsterminal", true);
+            obsterminal.AddAction(new MessageAction("You insert the card into the slot, and the screen turns on. That hacking course finally comes in handy, and you break into the ship's door system. You find the access code for the doors! Now you can travel through more places in the ship."));
+            obsterminal.AddAction(new SetAccessibilityAction(engineering1, true));
+            obsterminal.AddAction(new SetAccessibilityAction(engineering2, true));
+            obsterminal.AddAction(new SetAccessibilityAction(bridge, true));
+            obsterminal.AddCondition(new CarryingItemCondition(accesscard, true));
+            obsterminal.AddFailureAction(new MessageAction("You need an access card to use the computer."));
+
             //Occurrence obsterminal = new Occurrence("obsterminal", Parser.ParserFlags.Use, terminal.Name,
             //    new Action(Action.ActionTypes.Message, "You insert the card into the slot, and the screen turns on. That hacking course finally comes in handy, and you break in to the ship's door system. You find the access code for the doors! Now you can travel through more places in the ship."),
             //    "You need an access card to use the computer.");
@@ -707,8 +718,7 @@ namespace TagEngine.Data
             //GameInfo gameData = new GameInfo(rooms, items, npcs, occurrences, markers);
             gs.SetWelcomeMessage("Hello, and welcome to OddShip, a short adventure aboard a space craft set in the distant future.");
             //gameData.HelpMessage = "You find yourself aboard what seems to be a space craft. You can't remember how you arrived here, nor why. And your head hurts. You think you should probably find a way off as soon as possible.";
-            //gameData.StartRoomKey = "docking";
-
+            
             gs.SetEgo(new Ego("You", "It's just you."));
             gs.SetCurrentLocation(docking);
 

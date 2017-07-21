@@ -27,7 +27,7 @@ namespace TagEngine
     /// <summary>
     /// A message
     /// </summary>
-    public struct ResponseMessage
+    public class ResponseMessage
     {
         /// <summary>
         /// The message to display in the Client
@@ -44,7 +44,7 @@ namespace TagEngine
         /// </summary>
         /// <param name="message"></param>
         /// <param name="type"></param>
-        public ResponseMessage(string message, ResponseMessageType type)
+        public ResponseMessage(string message, ResponseMessageType type = ResponseMessageType.Normal)
         {
             Message = message;
             Type = type;
@@ -120,6 +120,8 @@ namespace TagEngine
         /// <param name="rm"></param>
         public void AddMessage(ResponseMessage rm)
         {
+            if (rm == null) return;
+
             Messages.Add(rm);
         }
 
@@ -130,10 +132,7 @@ namespace TagEngine
         /// <param name="type">The type is an indication to the Client of how this message might be displayed/handled</param>
         public void AddMessage(string message, ResponseMessageType type = ResponseMessageType.Normal)
         {
-            ResponseMessage rm;
-            rm.Message = message;
-            rm.Type = type;
-            AddMessage(rm);
+            AddMessage(new ResponseMessage(message, type));
         }
 
 		#endregion

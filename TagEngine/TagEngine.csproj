@@ -46,6 +46,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Entities\IHasInventory.cs" />
     <Compile Include="Input\Command.cs" />
     <Compile Include="Input\Commands\Combine.cs" />
     <Compile Include="Input\Commands\Debug.cs" />
@@ -65,6 +66,7 @@
     <Compile Include="Input\Commands\Help.cs" />
     <Compile Include="Input\Commands\Talk.cs" />
     <Compile Include="Input\Commands\Use.cs" />
+    <Compile Include="Input\ICommand.cs" />
     <Compile Include="Response.cs" />
     <Compile Include="Data\GameState.cs" />
     <Compile Include="Data\WordStore.cs" />
@@ -80,7 +82,10 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Input\Token.cs" />
     <Compile Include="Scripting\Action.cs" />
-    <Compile Include="Scripting\Actions\ChangeVariableAction.cs" />
+    <Compile Include="Scripting\Actions\SetAccessibilityAction.cs" />
+    <Compile Include="Scripting\Actions\SetExaminableAction.cs" />
+    <Compile Include="Scripting\Actions\SetVariableAction.cs" />
+    <Compile Include="Scripting\Actions\MessageAction.cs" />
     <Compile Include="Scripting\Condition.cs" />
     <Compile Include="Scripting\Conditions\CarryingItemCondition.cs" />
     <Compile Include="Scripting\Conditions\CurrentRoomCondition.cs" />
@@ -88,6 +93,9 @@
     <Compile Include="Scripting\Conditions\VariableCondition.cs" />
     <Compile Include="Scripting\Conditions\RoomVisitedCondition.cs" />
     <Compile Include="Scripting\Conditions\VisitsToRoomCondition.cs" />
+    <Compile Include="Scripting\IAction.cs" />
+    <Compile Include="Scripting\ICondition.cs" />
+    <Compile Include="Scripting\Occurrence.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

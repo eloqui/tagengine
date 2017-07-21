@@ -4,20 +4,6 @@ using System.Text;
 
 namespace TagEngine.Input
 {
-//	/// <summary>
-//	/// The different types of response the parser can detect
-//	/// TODO: make this extensible
-//	/// </summary>
-//	public enum ParserFlags
-//	{
-//		RoomDesc, ItemExam, ItemDesc, PickupItem,
-//		DropItem, InventoryList, GoRoom, PrintHelp,
-//		Message, Quit, Look, Talk, Use, GiveItem, Combine
-//#if DEBUG
-//		,Debug
-//#endif
-//	};
-
 	/// <summary>
 	/// Response from the parser
 	/// </summary>
@@ -29,13 +15,11 @@ namespace TagEngine.Input
 		/// The tokens created from the input
 		/// </summary>
 		public Tokeniser Tokens { get; private set; }
-        		
-		/// <summary>
-		/// The data
-		/// </summary>
-		//public object Data { get; private set; }
-
-        public Command Command { get; private set; }
+        
+        /// <summary>
+        /// The command
+        /// </summary>
+        public ICommand Command { get; private set; }
 
         /// <summary>
         /// A message to pass back
@@ -52,7 +36,7 @@ namespace TagEngine.Input
 		/// <param name="tokens">Tokens from the input</param>
 		/// <param name="command"></param>
         /// <param name="message"></param>
-		public ParserResponse(Tokeniser tokens, Command command = null, ResponseMessage message = new ResponseMessage())
+		public ParserResponse(Tokeniser tokens, ICommand command = null, ResponseMessage message = null)
 		{
             Tokens = tokens;
             Command = command;
@@ -80,18 +64,17 @@ namespace TagEngine.Input
             if (String.IsNullOrEmpty(t.Command.Word)) return new ParserResponse(t, message: new ResponseMessage("You need to tell me what to do.", ResponseMessageType.Warning));
 
             // find a Command that matches the command word from the token
-            Command command;
+            ICommand command;
             ResponseMessage message;
             try
             {
                 command = CommandManager.GetCommand(t.Command.Word);
-                message = new ResponseMessage();
+                message = null;
 
             } catch (CommandNotFoundException cnfe)
             {
                 command = null;
-                message.Message = cnfe.Message;
-                message.Type = ResponseMessageType.Error;
+                message = new ResponseMessage(cnfe.Message, ResponseMessageType.Error);
             }
             
             // pass it back

@@ -22,11 +22,27 @@ namespace TagEngine
         Back
     }
 
-	/// <summary>
-	/// The Engine class is responsible for setting up a game instance
-	/// and acting upon user input.
-	/// </summary>
-	public class Engine
+    /// <summary>
+    /// Extension functions for the Direction enum
+    /// </summary>
+    public static class DirectionExtensions
+    {
+        /// <summary>
+        /// Get the direction string for a Direction
+        /// </summary>
+        /// <param name="d">The direction</param>
+        /// <returns>The direction string</returns>
+        public static string GetExitDirection(this Direction d)
+        {
+            return WordStore.GetDirectionWord(d);
+        }
+    }
+
+    /// <summary>
+    /// The Engine class is responsible for setting up a game instance
+    /// and acting upon user input.
+    /// </summary>
+    public class Engine
 	{
         #region Singleton
 

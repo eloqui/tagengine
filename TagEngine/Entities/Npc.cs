@@ -8,15 +8,10 @@ namespace TagEngine.Entities
 	/// Representation of a non-player character
 	/// </summary>
 	[Serializable]
-	public class Npc : MovableEntity
+	public class Npc : MovableEntity, IHasInventory
 	{
 		#region Fields
-
-		/// <summary>
-		/// The list of items in this NPC's inventory
-		/// </summary>
-		private Inventory inventory;
-
+        
 		/// <summary>
 		/// This NPC's dialogue
 		/// TODO: rewrite dialogue
@@ -26,25 +21,22 @@ namespace TagEngine.Entities
 		/// <summary>
 		/// Indicates current index of dialogue
 		/// </summary>
-		[NonSerialized]
-		private int dialogueCounter = 0;
+		//[NonSerialized]
+		//private int dialogueCounter = 0;
 
 		/// <summary>
 		/// Whether this NPC should move randomly around the map
 		/// </summary>
-		private bool moveRandomly = false;
+		//private bool moveRandomly = false;
 
-		#endregion
+        #endregion
 
-		#region Properties
+        #region Properties
 
-		/// <summary>
-		/// Gets this NPC's inventory collection
-		/// </summary>
-		public Inventory Inventory
-		{
-			get { return inventory; }
-		}
+        /// <summary>
+        /// The list of items in this NPC's inventory
+        /// </summary>
+        public Inventory Inventory { get; protected set; }
 
 		/// <summary>
 		/// Gets or sets the default dialogue
@@ -59,11 +51,11 @@ namespace TagEngine.Entities
 		/// <summary>
 		/// Gets or sets whether this NPC should move randomly around the map
 		/// </summary>
-		public bool MoveRandomly
-		{
-			get { return moveRandomly; }
-			set { moveRandomly = value; }
-		}
+		//public bool MoveRandomly
+		//{
+		//	get { return moveRandomly; }
+		//	set { moveRandomly = value; }
+		//}
 
 		#endregion
 	
@@ -78,7 +70,7 @@ namespace TagEngine.Entities
 		public Npc(string name, string title, string description)
 			: base(name, title, description)
 		{
-			inventory = new Inventory(20); // TODO: allow setting inventory weight
+			Inventory = new Inventory(20); // TODO: allow setting inventory weight
             dialogue = new List<string>
             {
                 "Hello there!"
@@ -86,12 +78,14 @@ namespace TagEngine.Entities
         }
 
 		#endregion
-
-		#region Methods
-
-
-
-		#endregion
-
+        
+        /// <summary>
+        /// Get an NPC by casting from the name
+        /// </summary>
+        /// <param name="npcName"></param>
+        public static explicit operator Npc(string npcName)
+        {
+            return Engine.Instance.GameState.GetNpc(npcName);
+        }
 	}
 }

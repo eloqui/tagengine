@@ -1,36 +1,83 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using TagEngine.Data;
 using TagEngine.Entities;
 
 namespace TagEngine.Scripting
 {
 	/// <summary>
-	/// An action performed on game state
+	/// An action with 1 parameter performed on game state
 	/// </summary>
-	abstract public class Action
+	public abstract class Action<TData1> : IAction
 	{
-		private object val;
+        /// <summary>
+        /// First parameter
+        /// </summary>
+        public TData1 Param1 { get; protected set; }
+        
+        /// <summary>
+        /// Constructor
+        /// </summary>
+        /// <param name="param1"></param>
+        public Action(TData1 param1)
+        {
+            Param1 = param1;
+        }
 
-		private Entity entity;
+        /// <summary>
+        /// Perform the tasks for this action
+        /// </summary>
+        /// <param name="gs"></param>
+        /// <returns></returns>
+        public abstract ResponseMessage DoAction(GameState gs);
+    }
 
-		private string okMessage = "";
+    /// <summary>
+    /// An action with 2 parameters performed on game state
+    /// </summary>
+    /// <typeparam name="TData1"></typeparam>
+    /// <typeparam name="TData2"></typeparam>
+    public abstract class Action<TData1, TData2> : Action<TData1>
+    {
+        /// <summary>
+        /// Second parameter
+        /// </summary>
+        public TData2 Param2 { get; protected set; }
+        
+        /// <summary>
+        /// Constructor
+        /// </summary>
+        /// <param name="param1"></param>
+        /// <param name="param2"></param>
+        public Action(TData1 param1, TData2 param2) : base(param1)
+        {
+            Param2 = param2;
+        }
+    }
 
-		public object Val
-		{
-			get { return val; }
-		}
+    /// <summary>
+    /// An action with 3 parameters performed on game state
+    /// </summary>
+    /// <typeparam name="TData1"></typeparam>
+    /// <typeparam name="TData2"></typeparam>
+    /// <typeparam name="TData3"></typeparam>
+    public abstract class Action<TData1, TData2, TData3> : Action<TData1, TData2>
+    {
+        /// <summary>
+        /// Third parameter
+        /// </summary>
+        public TData3 Param3 { get; protected set; }
 
-		public Entity Entity
-		{
-			get { return entity; }
-		}
-
-		public void Act()
-		{
-			DoAction();
-		}
-
-		abstract protected void DoAction();
-	}
+        /// <summary>
+        /// Constructor
+        /// </summary>
+        /// <param name="param1"></param>
+        /// <param name="param2"></param>
+        /// <param name="param3"></param>
+        public Action(TData1 param1, TData2 param2, TData3 param3) : base(param1, param2)
+        {
+            Param3 = param3;
+        }
+    }
 }
