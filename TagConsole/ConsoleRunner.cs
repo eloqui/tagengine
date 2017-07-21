@@ -47,7 +47,7 @@ namespace TagConsole
 		public void Play()
 		{
             // check we have a console
-            if (!(Console.In is System.IO.StreamReader)) {
+            if (!(Console.In is System.IO.StreamReader || Console.In is System.IO.TextReader)) {
                 // if you get here, ensure the project is set to run in an external console
                 throw new ApplicationException("Cannot run without a console to work in!");
             }
