@@ -37,7 +37,8 @@ namespace TagEngine.Input.Commands
                 {
                     return new Response("Combine what?");
                 }
-                else if (itemsToCombine.Count < 2)
+
+                if (itemsToCombine.Count < 2)
                 {
                     return new Response("What should I combine that with?");
                 }

@@ -26,8 +26,8 @@ namespace TagEngine.Entities
 		/// <param name="name">The variable's name</param>
 		public Variable(string name)
 		{
-            this.Name = name;
-			this.Value = null;
+            Name = name;
+			Value = null;
 		}
 
 		/// <summary>
@@ -37,8 +37,8 @@ namespace TagEngine.Entities
 		/// <param name="value">The variable's initial value</param>
 		public Variable(string name, object value)
 		{
-            this.Name = name;
-			this.Value = value;
+            Name = name;
+			Value = value;
 		}
 
         //public T GetValue<T>()
@@ -56,7 +56,7 @@ namespace TagEngine.Entities
 		/// <summary>
 		/// Collection of variables
 		/// </summary>
-		private Dictionary<string, Variable> variables = new Dictionary<string, Variable>();
+		readonly Dictionary<string, Variable> variables = new Dictionary<string, Variable>();
 
 		/// <summary>
 		/// Sets the value of a variable or creates it if it does not exist
@@ -85,8 +85,9 @@ namespace TagEngine.Entities
 		/// <returns>The value of the variable or null if it is uninitialised</returns>
 		public object GetVariable(string name)
 		{
-			if (variables.ContainsKey(name)) return variables[name].Value;
-			return null;
+            if (!variables.ContainsKey(name)) return null;
+
+            return variables[name].Value;
 		}
 
 		/// <summary>
@@ -112,7 +113,7 @@ namespace TagEngine.Entities
 			StringBuilder sb = new StringBuilder();
 			foreach (KeyValuePair<string, Variable> kvp in variables)
 			{
-				sb.AppendFormat("{0}: {1}\n", kvp.Key, kvp.Value.Value.ToString());
+				sb.AppendFormat("{0}: {1}\n", kvp.Key, kvp.Value.Value);
 			}
 			return sb.ToString();
 		}

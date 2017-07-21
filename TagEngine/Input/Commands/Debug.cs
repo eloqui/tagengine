@@ -11,7 +11,7 @@ namespace TagEngine.Input.Commands
         /// <summary>
         /// List of subcommands the debug command handles
         /// </summary>
-        private static readonly string[] subCommands = {
+        static readonly string[] subCommands = {
                 "variables",
                 "setvariable",
                 "rooms"
@@ -73,7 +73,7 @@ namespace TagEngine.Input.Commands
             return r;
         }
 
-        private string GetDebugCommands()
+        string GetDebugCommands()
         {
             var sb = new StringBuilder();
             sb.Append("Debug commands:" + Environment.NewLine);

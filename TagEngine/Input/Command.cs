@@ -43,8 +43,7 @@ namespace TagEngine.Input
         /// <summary>
         /// Constructor
         /// </summary>
-        public Command()
-            : this("", null)
+        protected Command() : this("", null)
         {
 
         }
@@ -73,17 +72,20 @@ namespace TagEngine.Input
         }
     }
 
+    /// <summary>
+    /// Command manager.
+    /// </summary>
     public static class CommandManager
     {
         /// <summary>
         /// All command words and the command they run
         /// </summary>
-        private static SortedDictionary<string, ICommand> commands = null;
+        static SortedDictionary<string, ICommand> commands;
 
         /// <summary>
         /// All primary command words
         /// </summary>
-        private static SortedSet<string> primaryCommands = null;
+        static SortedSet<string> primaryCommands;
 
         /// <summary>
         /// Initialise the collection of commands
@@ -181,7 +183,7 @@ namespace TagEngine.Input
     }
 
     [Serializable]
-    internal class CommandNotFoundException : Exception
+    class CommandNotFoundException : Exception
     {
         public CommandNotFoundException()
         {

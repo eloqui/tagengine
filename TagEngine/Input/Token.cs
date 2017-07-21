@@ -99,7 +99,7 @@ namespace TagEngine.Input
 		/// <summary>
 		/// The individual tokens
 		/// </summary>
-		private List<Token> tokens;
+		List<Token> tokens;
         
         /// <summary>
         /// Count of words ignored
@@ -183,7 +183,7 @@ namespace TagEngine.Input
 		{
 			return new TokenEnumerator(this);
         }
-        private IEnumerator GetEnumerator1()
+        IEnumerator GetEnumerator1()
         {
             return this.GetEnumerator();
         }
@@ -212,7 +212,7 @@ namespace TagEngine.Input
 		/// Determine the type of each of the source elements and fill the tokens collection
 		/// </summary>
 		/// <param name="elements">Array of split elements</param>
-		private void Tokenise(string[] elements)
+		void Tokenise(string[] elements)
 		{
 			tokens = new List<Token>(elements.Length);
 
@@ -263,8 +263,8 @@ namespace TagEngine.Input
 		/// </summary>
 		internal class TokenEnumerator : IEnumerator<Token>
 		{
-			private int position;
-			private Tokeniser t;
+			int position;
+			Tokeniser t;
 
             public Token Current => t.tokens[position];
             object IEnumerator.Current => Current;
@@ -280,10 +280,8 @@ namespace TagEngine.Input
             /// </summary>
             public bool MoveNext()
 			{
-				if (++position >= t.tokens.Count)
-				{
-					return false;
-				}
+				if (++position >= t.tokens.Count) return false;
+				
 				return true;
 			}
 

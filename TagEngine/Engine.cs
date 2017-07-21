@@ -49,7 +49,7 @@ namespace TagEngine
         /// <summary>
         /// The single instance of this class
         /// </summary>
-        private static Engine instance;
+        static Engine instance;
 
         /// <summary>
         /// Get the single instance of this class
@@ -82,7 +82,7 @@ namespace TagEngine
 		/// <summary>
 		/// Private Constructor
 		/// </summary>
-		private Engine()
+		Engine()
 		{
 			LoadGame(new GameState());
 		}

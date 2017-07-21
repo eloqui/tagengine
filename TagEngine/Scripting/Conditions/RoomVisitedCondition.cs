@@ -9,20 +9,18 @@ namespace TagEngine.Scripting.Conditions
 {
 	class RoomVisitedCondition : Condition<Room, bool>
 	{
-        public RoomVisitedCondition(Room room, bool hasVisited) : base("roomvisited", room, hasVisited) { }
+        public RoomVisitedCondition(Room room, bool hasVisited = true) : base("roomvisited", room, hasVisited) { }
 
         public override bool TestCondition(GameState gs)
         {
-            var room = Param1 == null ? gs.Ego.CurrentRoom : Param1;
+            var room = Param1 ?? gs.Ego.CurrentRoom;
             
             if (Param2 == false)
             {
                 return !room.HasVisited;
             }
-            else
-            {
-                return room.HasVisited;
-            }
+
+            return room.HasVisited;
         }
 	}
 }

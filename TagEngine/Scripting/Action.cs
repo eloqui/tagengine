@@ -20,7 +20,7 @@ namespace TagEngine.Scripting
         /// Constructor
         /// </summary>
         /// <param name="param1"></param>
-        public Action(TData1 param1)
+        protected Action(TData1 param1)
         {
             Param1 = param1;
         }
@@ -50,7 +50,7 @@ namespace TagEngine.Scripting
         /// </summary>
         /// <param name="param1"></param>
         /// <param name="param2"></param>
-        public Action(TData1 param1, TData2 param2) : base(param1)
+        protected Action(TData1 param1, TData2 param2) : base(param1)
         {
             Param2 = param2;
         }
@@ -75,7 +75,7 @@ namespace TagEngine.Scripting
         /// <param name="param1"></param>
         /// <param name="param2"></param>
         /// <param name="param3"></param>
-        public Action(TData1 param1, TData2 param2, TData3 param3) : base(param1, param2)
+        protected Action(TData1 param1, TData2 param2, TData3 param3) : base(param1, param2)
         {
             Param3 = param3;
         }

@@ -34,29 +34,29 @@ namespace TagEngine.Entities
         /// <summary>
         /// Hash of exits from this room
         /// </summary>
-        private Dictionary<Direction, Room> exitKeys;
+        Dictionary<Direction, Room> exitKeys;
 
         /// <summary>
         /// Number of visits to this room
         /// TODO: move into gamestate object
         /// </summary>
         [NonSerialized]
-        private int numVisits = 0;
+        int numVisits;
 
         /// <summary>
         /// Items in this room
         /// </summary>
-        private List<Item> items;
+        List<Item> items;
 
         /// <summary>
         /// NPCs in this room
         /// </summary>
-        private List<Npc> npcs;
+        List<Npc> npcs;
 
         /// <summary>
         /// Whether this room is a magic transporter room
         /// </summary>
-        private bool isTransporter = false;
+        bool isTransporter;
 
         #endregion
 
@@ -85,16 +85,11 @@ namespace TagEngine.Entities
         {
             get
             {
-                if (base.ExtendedDescription == "")
-                {
-                    return "";
-                }
-                else
-                {
-                    return "You are in " + base.Description + ".\n" +
-                        base.ExtendedDescription + "\n" +
-                        GetItemsString() + GetNpcsString() + GetExitString();
-                }
+                if (base.ExtendedDescription == "") return "";
+
+                return "You are in " + base.Description + ".\n" +
+                    base.ExtendedDescription + "\n" +
+                    GetItemsString() + GetNpcsString() + GetExitString();
             }
             set
             {
@@ -167,7 +162,7 @@ namespace TagEngine.Entities
         /// <param name="name">The new room's name</param>
         /// <param name="title">The new room's title</param>
         /// <param name="description">The description of the new room</param>
-        /// <param name="exits">An array describing available exits</param>
+        /// <param name="isAccessible"></param>
         public Room(string name, string title, string description, bool isAccessible = true)
             : base(name, title, description, isAccessible)
         {
@@ -327,7 +322,7 @@ namespace TagEngine.Entities
         /// <summary>
         /// Add an exit to this room
         /// </summary>
-        /// <param name="name">The exit direction to set</param>
+        /// <param name="exit">The exit direction to set</param>
         /// <param name="room">The room the new exit leads to</param>
         public void AddExit(Direction exit, Room room)
         {
@@ -405,7 +400,7 @@ namespace TagEngine.Entities
         /// Get a list of exits from this room
         /// </summary>
         /// <returns></returns>
-        private string GetExitString()
+        string GetExitString()
 		{
             if (exitKeys.Count == 0) return "";
 
@@ -422,7 +417,7 @@ namespace TagEngine.Entities
         /// Get a list of NPCs present in the room
         /// </summary>
         /// <returns></returns>
-		private string GetNpcsString()
+		string GetNpcsString()
 		{
 			if (npcs.Count == 0) return "";
 
@@ -440,7 +435,7 @@ namespace TagEngine.Entities
         /// Get a list of items in this room
         /// </summary>
         /// <returns></returns>
-		private string GetItemsString()
+		string GetItemsString()
 		{
 			if (items.Count == 0) return "";
 

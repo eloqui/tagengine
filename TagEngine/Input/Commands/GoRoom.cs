@@ -32,10 +32,8 @@ namespace TagEngine.Input.Commands
                     ego.MoveTo(ego.PreviousRoom);
                     return new Response(engine.Describe(ego.CurrentRoom));
                 }
-                else
-                {
-                    return new Response("You've not been anywhere yet!");
-                }
+
+                return new Response("You've not been anywhere yet!");
             }
 
             // try to leave current room
@@ -44,15 +42,14 @@ namespace TagEngine.Input.Commands
             {
                 return new Response("You try to walk " + directionWord + ", but realise how bad a mistake that wasa when you walk straight into a solid wall. Your nose will hurt for days.");
             }
-            else if (!newRoom.IsAccessible)
+
+            if (!newRoom.IsAccessible)
             {
                 return new Response("You try, but find that the door is locked.");
             }
-            else
-            {
-                ego.MoveTo(newRoom);
-                return new Response(engine.Describe(ego.CurrentRoom));
-            }
+
+            ego.MoveTo(newRoom);
+            return new Response(engine.Describe(ego.CurrentRoom));
         }
     }
 }

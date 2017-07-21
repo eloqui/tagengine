@@ -16,12 +16,12 @@ namespace TagConsole
 		/// <summary>
 		/// The width of the console
 		/// </summary>
-		private int consoleWidth;
+		int consoleWidth;
 
 		/// <summary>
 		/// The height of the console
 		/// </summary>
-		private int consoleHeight;
+		int consoleHeight;
 
 		#endregion
 
@@ -33,8 +33,8 @@ namespace TagConsole
 		public ConsoleRunner()
 		{
 			Console.Title = "TagEngine";// engine.GameTitle;
-			this.consoleHeight = Console.BufferHeight;
-			this.consoleWidth = Console.BufferWidth;
+			consoleHeight = Console.BufferHeight;
+			consoleWidth = Console.BufferWidth;
 		}
 
 		#endregion
@@ -96,20 +96,28 @@ namespace TagConsole
                 // handle response actions
                 foreach (var action in response.Actions)
                 {
-                    if (action == ResponseAction.Quit) finished = true;
-                    if (action == ResponseAction.Pause) Pause("Paused. Press enter to continue...");
+                    switch (action)
+                    {
+                        case ResponseAction.Quit:
+                            finished = true;
+                            break;
+
+                        case ResponseAction.Pause:
+                            Pause("Paused. Press enter to continue...");
+                            break;
+                    }
                 }
-			}
+            }
 
-			WriteLine("Thank you for playing. Goodbye!");
+            WriteLine("Thank you for playing. Goodbye!");
 			Pause("Press enter to close...");
-		}
+        }
 
-		/// <summary>
-		/// Pause the game
-		/// </summary>
-		/// <param name="instructions">Optional instructions to output before pausing</param>
-		public void Pause(string instructions)
+        /// <summary>
+        /// Pause the game
+        /// </summary>
+        /// <param name="instructions">Optional instructions to output before pausing</param>
+        public void Pause(string instructions)
 		{
 			if (!String.IsNullOrEmpty(instructions)) Write(instructions);
 			Console.ReadLine();
@@ -142,12 +150,12 @@ namespace TagConsole
 		/// </summary>
 		/// <param name="longText"></param>
 		/// <returns></returns>
-		private string WrapLines(string longText)
+		string WrapLines(string longText)
 		{
-            if (this.consoleWidth == 0) return longText;
+            if (consoleWidth == 0) return longText;
 
 			int start = 0; // start of line
-			int index = this.consoleWidth - 1; // end of line
+			int index = consoleWidth - 1; // end of line
 			int backTrack = 0; // how far back from EOL to first space
 			StringBuilder sb = new StringBuilder();
 
@@ -156,14 +164,14 @@ namespace TagConsole
 				while (index < longText.Length - 1)
 				{
 					// check if there are any linebreaks in this line
-					if (longText.IndexOf("\n", start, index - start) == -1)
+					if (longText.IndexOf("\n", start, index - start, StringComparison.CurrentCulture) == -1)
 					{
 						backTrack = 0;
 						// could use LastIndexOf() but it was having some troubles
 						while (longText[index - backTrack] != ' ')
 							backTrack++;
 					}
-					else backTrack = index - longText.IndexOf("\n", start, index - start);
+					else backTrack = index - longText.IndexOf("\n", start, index - start, StringComparison.CurrentCulture);
 
 					// append the appropriate length to the string
 					sb.Append(longText.Substring(start, (index - backTrack) - start) + "\n");
@@ -191,5 +199,5 @@ namespace TagConsole
 			ConsoleRunner runner = new ConsoleRunner();
 			runner.Play();
 		}
-	}
+    }
 }

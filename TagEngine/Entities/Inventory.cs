@@ -47,7 +47,7 @@ namespace TagEngine.Entities
         /// 
         /// </summary>
         /// <param name="maxWeight"></param>
-        public Inventory(int maxWeight) : base()
+        public Inventory(int maxWeight)
         {
             items = new Dictionary<string, Item>();
             MaxWeight = maxWeight;
@@ -103,7 +103,7 @@ namespace TagEngine.Entities
         {
             return new ItemEnumerator(this);
         }
-        private IEnumerator GetEnumerator1()
+        IEnumerator GetEnumerator1()
         {
             return this.GetEnumerator();
         }
@@ -116,9 +116,9 @@ namespace TagEngine.Entities
 
         internal class ItemEnumerator : IEnumerator<Item>
         {
-            private int position;
-            private Inventory inventory;
-            private Item currentItem;
+            int position;
+            Inventory inventory;
+            Item currentItem;
 
             public Item Current => currentItem;
             object IEnumerator.Current => Current;
@@ -132,14 +132,9 @@ namespace TagEngine.Entities
 
             public bool MoveNext()
             {
-                if (++position >= inventory.items.Count)
-                {
-                    return false;
-                }
-                else
-                {
-                    currentItem = inventory.items.ElementAt(position).Value;
-                }
+                if (++position >= inventory.items.Count) return false;
+
+                currentItem = inventory.items.ElementAt(position).Value;
 
                 return true;
             }

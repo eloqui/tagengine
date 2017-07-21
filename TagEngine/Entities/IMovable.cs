@@ -23,7 +23,7 @@ namespace TagEngine.Entities
 		/// <summary>
 		/// Move this entity to a new room
 		/// </summary>
-		/// <param name="room">The name of the room to which to move the entity</param>
+		/// <param name="roomName">The name of the room to which to move the entity</param>
 		void MoveTo(string roomName);
 
 		/// <summary>

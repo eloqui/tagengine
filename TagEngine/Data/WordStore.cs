@@ -16,7 +16,7 @@ namespace TagEngine.Data
         /// <summary>
         /// Words that are ignored in the input. (e.g. conjunctions, prepositions, etc.)
         /// </summary>
-		private static string[] ignore = {
+		static string[] ignore = {
 			"the", "a", "an", "is", "of", "on", "for", "by", "at", "what", "when", "why", "how", "do", "from", "who", "where", "some", "to", "with"
 		};
 
@@ -27,7 +27,7 @@ namespace TagEngine.Data
         /// Must be in the order: North, South, East, West, Up, Down, Back
         /// </remarks>
         /// <seealso cref="GetDirectionWord(Direction)"/>
-		private static string[] directions = {
+		static string[] directions = {
 			"north", "south", "east", "west", "up", "down", "back"
 		};
 
@@ -77,7 +77,7 @@ namespace TagEngine.Data
             }
 
             // should never get here
-            throw new ArgumentOutOfRangeException("Not a valid direction");
+            throw new ArgumentOutOfRangeException(nameof(d));
         }
 
         /// <summary>
@@ -87,7 +87,7 @@ namespace TagEngine.Data
         /// <returns></returns>
         public static Direction GetDirection(string word)
         {
-            if (!IsDirection(word)) throw new ArgumentOutOfRangeException(word + " is not a valid direction");
+            if (!IsDirection(word)) throw new ArgumentOutOfRangeException(nameof(word));
 
             // I18N: have some lookup table in the translation data
             switch (word.ToLower())
@@ -99,9 +99,9 @@ namespace TagEngine.Data
                 case "up":    return Direction.Up;
                 case "down":  return Direction.Down;
                 case "back":  return Direction.Back;
-             }
+            }
 
-            throw new ArgumentOutOfRangeException(word + " is not a known direction");
+            throw new ArgumentOutOfRangeException(nameof(word));
         }
 	}
 }

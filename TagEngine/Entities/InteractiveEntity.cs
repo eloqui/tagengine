@@ -13,17 +13,17 @@ namespace TagEngine.Entities
 		/// <summary>
 		/// A name suitable for output
 		/// </summary>
-		private string title;
+		string title;
 
 		/// <summary>
 		/// A short description of this object
 		/// </summary>
-		private string description;
+		string description;
 
 		/// <summary>
 		/// An extended description of this object, used for examinations
 		/// </summary>
-		private string extendedDescription = "";
+		string extendedDescription = "";
 
 		/// <summary>
 		/// Whether this item can be seen by the user

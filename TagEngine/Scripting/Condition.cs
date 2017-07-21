@@ -26,7 +26,7 @@ namespace TagEngine.Scripting
         /// </summary>
         /// <param name="name"></param>
         /// <param name="param1"></param>
-        public Condition(string name, TParam1 param1)
+        protected Condition(string name, TParam1 param1)
         {
             Name = name;
             Param1 = param1;
@@ -41,7 +41,7 @@ namespace TagEngine.Scripting
     }
 
 	/// <summary>
-	/// A condition with 2 parameter that must be met before an action can take place occur
+	/// A condition with 2 parameters that must be met before an action can take place occur
 	/// </summary>
 	abstract public class Condition<TParam1, TParam2> : Condition<TParam1>
 	{
@@ -56,7 +56,7 @@ namespace TagEngine.Scripting
         /// <param name="name"></param>
         /// <param name="param1"></param>
         /// <param name="param2"></param>
-        public Condition(string name, TParam1 param1, TParam2 param2) : base(name, param1)
+        protected Condition(string name, TParam1 param1, TParam2 param2) : base(name, param1)
         {
             Param2 = param2;
         }
@@ -79,7 +79,7 @@ namespace TagEngine.Scripting
         /// <param name="param1"></param>
         /// <param name="param2"></param>
         /// <param name="param3"></param>
-        public Condition(string name, TParam1 param1, TParam2 param2, TParam3 param3) : base(name, param1, param2)
+        protected Condition(string name, TParam1 param1, TParam2 param2, TParam3 param3) : base(name, param1, param2)
         {
             Param3 = param3;
         }

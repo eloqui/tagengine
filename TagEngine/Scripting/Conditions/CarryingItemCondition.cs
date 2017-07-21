@@ -8,7 +8,7 @@ namespace TagEngine.Scripting.Conditions
 {
     class CarryingItemCondition : Condition<Item, bool>
     {
-        public CarryingItemCondition(Item item, bool isCarrying) : base("carryingitem", item, isCarrying) { }
+        public CarryingItemCondition(Item item, bool isCarrying = true) : base("carryingitem", item, isCarrying) { }
 
         public override bool TestCondition(GameState gs)
         {
@@ -16,10 +16,8 @@ namespace TagEngine.Scripting.Conditions
             {
                 return Param2;
             }
-            else
-            {
-                return !Param2;
-            }
+
+            return !Param2;
         }
     }
 }

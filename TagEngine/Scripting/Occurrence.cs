@@ -13,17 +13,17 @@ namespace TagEngine.Scripting
         /// <summary>
         /// Actions run when the condition is true
         /// </summary>
-        List<IAction> actions;
+        readonly List<IAction> actions;
 
         /// <summary>
         /// Actions run when the condition is false
         /// </summary>
-        List<IAction> failureActions;
+        readonly List<IAction> failureActions;
 
         /// <summary>
         /// Conditions to test
         /// </summary>
-        List<ICondition> conditions;
+        readonly List<ICondition> conditions;
 
         /// <summary>
         /// Indicates if the occurrence is active or not

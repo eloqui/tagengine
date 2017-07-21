@@ -16,18 +16,18 @@ namespace TagEngine.Entities
 		/// This NPC's dialogue
 		/// TODO: rewrite dialogue
 		/// </summary>
-		private List<string> dialogue;
+		List<string> dialogue;
 
 		/// <summary>
 		/// Indicates current index of dialogue
 		/// </summary>
 		//[NonSerialized]
-		//private int dialogueCounter = 0;
+		//int dialogueCounter = 0;
 
 		/// <summary>
 		/// Whether this NPC should move randomly around the map
 		/// </summary>
-		//private bool moveRandomly = false;
+		//bool moveRandomly = false;
 
         #endregion
 
