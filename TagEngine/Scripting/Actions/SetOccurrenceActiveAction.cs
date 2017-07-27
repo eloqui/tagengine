@@ -4,19 +4,16 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using TagEngine.Data;
-using TagEngine.Entities;
 
 namespace TagEngine.Scripting.Actions
 {
-    class SetExaminableAction : Action<InteractiveEntity, bool>
+    class SetOccurrenceActiveAction : Action<Occurrence, bool>
     {
-        public SetExaminableAction(InteractiveEntity entity, bool isExaminable) : base(entity, isExaminable)
-        {
-        }
+        public SetOccurrenceActiveAction(Occurrence occurrence, bool active = true) : base(occurrence, active) { }
 
         public override Response DoAction(GameState gs)
         {
-            Param1.IsExaminable = Param2;
+            Param1.IsActive = Param2;
 
             return null;
         }

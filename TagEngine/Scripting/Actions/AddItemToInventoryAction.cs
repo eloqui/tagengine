@@ -8,15 +8,15 @@ using TagEngine.Entities;
 
 namespace TagEngine.Scripting.Actions
 {
-    class SetExaminableAction : Action<InteractiveEntity, bool>
+    class AddItemToInventoryAction : Action<Item>
     {
-        public SetExaminableAction(InteractiveEntity entity, bool isExaminable) : base(entity, isExaminable)
+        public AddItemToInventoryAction(Item item) : base(item)
         {
         }
 
         public override Response DoAction(GameState gs)
         {
-            Param1.IsExaminable = Param2;
+            gs.Ego.Inventory.AddItem(Param1);
 
             return null;
         }

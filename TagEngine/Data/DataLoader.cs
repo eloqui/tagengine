@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using TagEngine.Entities;
+using TagEngine.Input.Commands;
 using TagEngine.Scripting;
 using TagEngine.Scripting.Actions;
 using TagEngine.Scripting.Conditions;
@@ -176,7 +177,7 @@ namespace TagEngine.Data
 
             terminal = new Item("terminal", "Computer Terminal", "A computer access terminal", "It uses a touch-screen for input, but seems to require an access card before it can be used.", 100);
             terminal.CanPickup = false;
-            terminal.PickupMessage = "It would take too long to cut it out of the bulkhead with your bare hands. It would be dangerous to carry such a heavy weight around anyway.";
+            terminal.PickupMessage = "It would take too long to cut it out of the bulkhead with your bare hands. It would be dangerous to carry such a heavy weight around. You decide against it.";
             observation.AddItem(terminal);
 
             shovel = new Item("shovel", "Shovel", "A long-handled shovel", "It's in good condition, and has only a small bit of dirt on it.", 5);
@@ -349,54 +350,49 @@ namespace TagEngine.Data
 
             #region Actions
 
-            // These would be much easier to create with a designer program
+            // These would be much easier to create with a designer program/domain language
 
             #region Unlock doors with Terminal
 
             // use the terminal in observation, with accesscard unlocks three doors
-            Occurrence obsterminal = new Occurrence("obsterminal", true);
+            Occurrence obsterminal = new Occurrence("obsterminal");
+            obsterminal.SetTrigger(new Use.Trigger(terminal));
+            obsterminal.AddCondition(new CarryingItemCondition(accesscard, true));
             obsterminal.AddAction(new MessageAction("You insert the card into the slot, and the screen turns on. That hacking course finally comes in handy, and you break into the ship's door system. You find the access code for the doors! Now you can travel through more places in the ship."));
             obsterminal.AddAction(new SetAccessibilityAction(engineering1, true));
             obsterminal.AddAction(new SetAccessibilityAction(engineering2, true));
             obsterminal.AddAction(new SetAccessibilityAction(bridge, true));
-            obsterminal.AddCondition(new CarryingItemCondition(accesscard, true));
             obsterminal.AddFailureAction(new MessageAction("You need an access card to use the computer."));
-
-            //Occurrence obsterminal = new Occurrence("obsterminal", Parser.ParserFlags.Use, terminal.Name,
-            //    new Action(Action.ActionTypes.Message, "You insert the card into the slot, and the screen turns on. That hacking course finally comes in handy, and you break in to the ship's door system. You find the access code for the doors! Now you can travel through more places in the ship."),
-            //    "You need an access card to use the computer.");
-            //obsterminal.AddAction(new Action(Action.ActionTypes.ChangeObjectAcc, engineering2.Name, true));
-            //obsterminal.AddAction(new Action(Action.ActionTypes.ChangeObjectAcc, engineering1.Name, true));
-            //obsterminal.AddAction(new Action(Action.ActionTypes.ChangeObjectAcc, bridge.Name, true));
-            //obsterminal.AddCondition(new Condition(Condition.ConditionTypes.CarryingItem, accesscard.Name, true));
 
             #endregion
 
             #region Various Combines
 
             //// combine spanner and bucket to get wire
-            //Occurrence spannerandbucket = new Occurrence("spannerandbucket", Parser.ParserFlags.Combine, "spanner bucket",
-            //    new Action(Action.ActionTypes.Message, "You use the spanner to undo the screws holding the wire to the bucket, and throw away the bucket."));
-            //spannerandbucket.AddAction(new Action(Action.ActionTypes.ChangeObjectAcc, bucket.Name, false));
-            //spannerandbucket.AddAction(new Action(Action.ActionTypes.ChangeObjectAcc, wire.Name, true));
-            //spannerandbucket.AddAction(new Action(Action.ActionTypes.AddItemToInv, wire.Name, null));
-            //spannerandbucket.AddAction(new Action(Action.ActionTypes.RemoveItemFromInv, bucket.Name, null));
+            Occurrence spannerandbucket = new Occurrence("spannerandbucket");
+            spannerandbucket.SetTrigger(new Combine.Trigger(spanner, bucket));
+            spannerandbucket.AddAction(new MessageAction("You use the spanner to undo the screws holding the wire to the bucket, and throw away the bucket."));
+            spannerandbucket.AddAction(new SetAccessibilityAction(bucket, false));
+            spannerandbucket.AddAction(new SetAccessibilityAction(wire, true));
+            spannerandbucket.AddAction(new AddItemToInventoryAction(wire));
+            spannerandbucket.AddAction(new RemoveItemFromInventoryAction(bucket));
 
             //// combine plasmagun and component to get power source
-            //Occurrence plasmagunandcomponent = new Occurrence("plasmagunandcomponent", Parser.ParserFlags.Combine, "plasmagun component",
-            //    new Action(Action.ActionTypes.Message, "You fit the end of the plasma gun into the socket on the component. Wow, you're an engineer. You assume it is now a portable power source. Now, you just have to find a use for it."));
-            //plasmagunandcomponent.AddAction(new Action(Action.ActionTypes.AddItemToInv, powerdevice.Name, null));
-            //plasmagunandcomponent.AddAction(new Action(Action.ActionTypes.RemoveItemFromInv, plasmagun.Name, null));
-            //plasmagunandcomponent.AddAction(new Action(Action.ActionTypes.RemoveItemFromInv, component.Name, null));
+            Occurrence plasmagunandcomponent = new Occurrence("plasmagunandcomponent");
+            plasmagunandcomponent.SetTrigger(new Combine.Trigger(plasmagun, component));
+            plasmagunandcomponent.AddAction(new MessageAction("You fit the end of the plasma gun into the socket on the component.Wow, you're an engineer. You assume it is now a portable power source. Now, you just have to find a use for it."));
+            plasmagunandcomponent.AddAction(new AddItemToInventoryAction(powerdevice));
+            plasmagunandcomponent.AddAction(new RemoveItemFromInventoryAction(plasmagun));
+            plasmagunandcomponent.AddAction(new RemoveItemFromInventoryAction(component));
 
 
             #endregion
 
             //// enter garden whilst carrying shovel
-            //Occurrence entergarden = new Occurrence("entergarden", Parser.ParserFlags.GoRoom, garden.Name,
-            //    new Action(Action.ActionTypes.Message,
-            //    "You stick to the sides of the garden to avoid Archet's gaze. Luckily, she is busy in a far corner."));
-            //entergarden.AddCondition(new Condition(Condition.ConditionTypes.CarryingItem, shovel.Name, true));
+            Occurrence entergarden = new Occurrence("entergarden");
+            entergarden.SetTrigger(new GoRoom.Trigger(garden));
+            entergarden.AddAction(new MessageAction("You stick to the sides of the garden to avoid Archet's gaze. Luckily, she is pottering about in a far corner."));
+            entergarden.AddCondition(new CarryingItemCondition(shovel));
 
             #region Captain's Dialogue and Quarters and Bridge
 
@@ -431,28 +427,30 @@ namespace TagEngine.Data
             //talkcaptain2.Active = false;
 
             //// lose if no fork
-            //Occurrence nofork = new Occurrence("nofork", Parser.ParserFlags.GoRoom, corridor5.Name,
-            //    new Action(Action.ActionTypes.LoseGame, "You try to leave the room, but realise the door is really locked. You search his room ceiling to floor, but find nothing of use. After an hour, you hear the Captain approach his door. If only you had something to open that box!!"));
-            //nofork.AddCondition(new Condition(Condition.ConditionTypes.CarryingItem, fork.Name, false));
-            //nofork.AddCondition(new Condition(Condition.ConditionTypes.Marker, "captainmove1", 1));
-            //nofork.AddCondition(new Condition(Condition.ConditionTypes.Marker, "captainhaslocked", 1));
-            //nofork.AddCondition(new Condition(Condition.ConditionTypes.RoomHasNpc, bridge.Name, captain.Name));
-            //nofork.Active = false;
+            Occurrence nofork = new Occurrence("nofork", false);
+            nofork.SetTrigger(new GoRoom.Trigger(corridor5));
+            nofork.AddAction(new LoseGameAction("You try to leave the room, but realise the door is really locked. You search the cabin ceiling to floor, but find nothing of use. After an hour, you hear the Captain approach his door. If only you had found something to open that box!"));
+            nofork.AddCondition(new CarryingItemCondition(fork, false));
+            nofork.AddCondition(new VariableCondition("captainmove1", true));
+            nofork.AddCondition(new VariableCondition("captainhaslocked", true));
+            nofork.AddCondition(new RoomHasNpcCondition(bridge, captain));
 
             //// lose game if you enter the bridge after you've escaped from captains quarters
-            //Occurrence enterbridge = new Occurrence("enterbridge", Parser.ParserFlags.GoRoom, bridge.Name,
-            //    new Action(Action.ActionTypes.LoseGame, "As you pass through the doors, the captain shouts out \"How did you get out?\" and before you are aware, he pulls out his plasma gun and shoots you. You die instantly. Too bad."));
-            //enterbridge.AddCondition(new Condition(Condition.ConditionTypes.Marker, "captainhaslocked", 1));
+            Occurrence enterbridge = new Occurrence("enterbridge");
+            enterbridge.SetTrigger(new GoRoom.Trigger(bridge));
+            enterbridge.AddAction(new LoseGameAction("As you pass through the doors, the captain shouts out, \"How did you get out?\" and before you are aware, he pulls out his plasma gun and shoots you. You die instantly. Too bad."));
+            enterbridge.AddCondition(new VariableCondition("captainhaslocked", true));
 
             //// use the fork on the box to open it to get the captain's key
-            //Occurrence forkonbox = new Occurrence("forkonbox", Parser.ParserFlags.Combine, "fork box",
-            //    new Action(Action.ActionTypes.Message, "You quickly fashion a slim-jim out of the long pronged fork, and fiddle for a short while with the box's lock. Eventually, it clicks open, and out of it falls a key."),
-            //    "You should talk to the captain first before you go rifling through his things.");
-            //forkonbox.AddAction(new Action(Action.ActionTypes.AddItemToRoom, captainskey.Name, capqtrs.Name));
-            //forkonbox.AddAction(new Action(Action.ActionTypes.RemoveItemFromInv, box.Name, null));
-            //forkonbox.AddAction(new Action(Action.ActionTypes.RemoveItemFromRoom, box.Name, capqtrs.Name));
-            //forkonbox.AddAction(new Action(Action.ActionTypes.DisableOccurrence, nofork.Name, null));
-            //forkonbox.AddCondition(new Condition(Condition.ConditionTypes.RoomHasNpc, bridge.Name, captain.Name));
+            Occurrence forkonbox = new Occurrence("forkonbox");
+            forkonbox.SetTrigger(new Combine.Trigger(fork, box));
+            forkonbox.AddAction(new MessageAction("You quickly fashion a slim-jim out of the long pronged fork, and fiddle for a short while with the box's lock. Eventually, it clicks open, and out of it falls a key."));
+            forkonbox.AddAction(new AddItemToRoomAction(capqtrs, captainskey));
+            forkonbox.AddAction(new RemoveItemFromInventoryAction(box));
+            forkonbox.AddAction(new RemoveItemFromRoomAction(capqtrs, box));
+            forkonbox.AddAction(new SetOccurrenceActiveAction(nofork, false));
+            forkonbox.AddCondition(new RoomHasNpcCondition(bridge, captain));
+            forkonbox.AddFailureAction(new MessageAction("You should talk to the captain first before you go rummaging through his things."));
 
             #endregion
 
@@ -496,13 +494,14 @@ namespace TagEngine.Data
             //talkarchet4.AddCondition(new Condition(Condition.ConditionTypes.Marker, "talkedarchet", 1));
 
             //// give seeds to archet
-            //Occurrence giveseeds = new Occurrence("giveseeds", Parser.ParserFlags.GiveItem, "archet seeds",
-            //    new Action(Action.ActionTypes.GiveItemToNpc, archet.Name, seeds.Name, "You hand Archet the seeds and she thanks you. You wonder what you reward for that was, but obviously she doesn't."));
-            //giveseeds.AddAction(new Action(Action.ActionTypes.ChangeMarker, "givenseeds", 1));
-            //giveseeds.AddAction(new Action(Action.ActionTypes.DisableOccurrence, talkarchet2.Name, null));
-            //giveseeds.AddAction(new Action(Action.ActionTypes.DisableOccurrence, talkarchet3.Name, null));
-            //giveseeds.AddAction(new Action(Action.ActionTypes.EnableOccurrence, talkarchet4.Name, null));
-            //giveseeds.AddCondition(new Condition(Condition.ConditionTypes.CarryingItem, seeds.Name, true));
+            Occurrence giveseeds = new Occurrence("giveseeds");
+            giveseeds.SetTrigger(new Give.Trigger(archet, seeds));
+            giveseeds.AddAction(new MessageAction("You hand Archet the seeds and she thanks you. You wonder what your reward for that was, but obviously she doesn't."));
+            giveseeds.AddAction(new SetVariableAction("givenseeds", true));
+            //giveseeds.AddAction(new ToggleOccurrenceAction(talkarchet2, false));
+            //giveseeds.AddAction(new ToggleOccurrenceAction(talkarchet3, false));
+            //giveseeds.AddAction(new ToggleOccurrenceAction(talkarchet4, true));
+            giveseeds.AddCondition(new CarryingItemCondition(seeds));
 
             #endregion
 
@@ -549,75 +548,83 @@ namespace TagEngine.Data
             //talkbill4.AddCondition(new Condition(Condition.ConditionTypes.Marker, "talkedbill", 1));
 
             //// give sandwich to bill
-            //Occurrence givesandwich = new Occurrence("givesandwich", Parser.ParserFlags.GiveItem, "bill sandwich",
-            //    new Action(Action.ActionTypes.Message, "Bill grabs the sandwich and with a loud moan runs off to consume it. He doesn't notice that he flipped the unlock switch for the engine-room doors."));
-            //givesandwich.AddAction(new Action(Action.ActionTypes.ChangeObjectAcc, engine1.Name, true));
-            //givesandwich.AddAction(new Action(Action.ActionTypes.ChangeObjectAcc, engine2.Name, true));
-            //givesandwich.AddAction(new Action(Action.ActionTypes.ChangeObjectAcc, mysterious.Name, true));
-            //givesandwich.AddAction(new Action(Action.ActionTypes.MoveNpc, bill.Name, mess.Name));
-            //givesandwich.AddAction(new Action(Action.ActionTypes.GiveItemToNpc, bill.Name, sandwich.Name));
-            //givesandwich.AddAction(new Action(Action.ActionTypes.ChangeMarker, "givensandwich", 1));
-            //givesandwich.AddCondition(new Condition(Condition.ConditionTypes.CarryingItem, sandwich.Name, true));
+            Occurrence givesandwich = new Occurrence("givesandwich");
+            givesandwich.SetTrigger(new Give.Trigger(bill, sandwich));
+            givesandwich.AddAction(new MessageAction("Bill grabs the sandwich and with a loud moan runs off to consume it. He doesn't notice that he flipped the unlock switch for the engine room doors."));
+            givesandwich.AddAction(new SetAccessibilityAction(engine1, true));
+            givesandwich.AddAction(new SetAccessibilityAction(engine2, true));
+            givesandwich.AddAction(new SetAccessibilityAction(mysterious, true));
+            givesandwich.AddAction(new MoveNpcAction(bill, mess));
+            givesandwich.AddAction(new GiveItemToNpcAction(bill, sandwich));
+            givesandwich.AddAction(new SetVariableAction("givensandwich", true));
+            givesandwich.AddCondition(new CarryingItemCondition(sandwich));
 
             #endregion
 
             #region Captain's Key
 
             //// give access to rooms when the captain's key is in inventory
-            //Occurrence capkey = new Occurrence("capkey", Parser.ParserFlags.PickUpItem, captainskey.Name,
-            //    new Action(Action.ActionTypes.ChangeObjectAcc, airlock.Name, true),
-            //    "You need the access card to use the Captain's key.");
-            //capkey.AddAction(new Action(Action.ActionTypes.ChangeObjectAcc, capqtrs.Name, true));
-            //capkey.AddAction(new Action(Action.ActionTypes.ChangeObjectAcc, qtrs2.Name, true));
-            //capkey.AddAction(new Action(Action.ActionTypes.ChangeObjectAcc, qtrs1.Name, true));
-            //capkey.AddAction(new Action(Action.ActionTypes.ChangeObjectAcc, no1qtrs.Name, true));
-            //capkey.AddAction(new Action(Action.ActionTypes.ChangeObjectAcc, weapons.Name, true));
-            //capkey.AddAction(new Action(Action.ActionTypes.ChangeObjectAcc, tools.Name, true));
-            //capkey.AddAction(new Action(Action.ActionTypes.ChangeObjectAcc, corridor5.Name, true));
-            //capkey.AddCondition(new Condition(Condition.ConditionTypes.CarryingItem, accesscard.Name, true));
+            Occurrence capkey = new Occurrence("capkey");
+            capkey.SetTrigger(new PickUp.Trigger(captainskey));
+            capkey.AddAction(new SetAccessibilityAction(airlock, true));
+            capkey.AddAction(new SetAccessibilityAction(capqtrs, true));
+            capkey.AddAction(new SetAccessibilityAction(qtrs1, true));
+            capkey.AddAction(new SetAccessibilityAction(qtrs2, true));
+            capkey.AddAction(new SetAccessibilityAction(no1qtrs, true));
+            capkey.AddAction(new SetAccessibilityAction(weapons, true));
+            capkey.AddAction(new SetAccessibilityAction(airlock, true));
+            capkey.AddAction(new SetAccessibilityAction(corridor5, true));
+            capkey.AddCondition(new CarryingItemCondition(accesscard));
+            capkey.AddFailureAction(new MessageAction("You need an access card to use the Captain's key."));
 
             //// disallow access to rooms when the captain's key is dropped
-            //Occurrence capkeydrop = new Occurrence("capkeydrop", Parser.ParserFlags.PutDownItem, captainskey.Name,
-            //    new Action(Action.ActionTypes.ChangeObjectAcc, airlock.Name, false));
-            //capkeydrop.AddAction(new Action(Action.ActionTypes.ChangeObjectAcc, capqtrs.Name, false));
-            //capkeydrop.AddAction(new Action(Action.ActionTypes.ChangeObjectAcc, qtrs2.Name, false));
-            //capkeydrop.AddAction(new Action(Action.ActionTypes.ChangeObjectAcc, qtrs1.Name, false));
-            //capkeydrop.AddAction(new Action(Action.ActionTypes.ChangeObjectAcc, no1qtrs.Name, false));
-            //capkeydrop.AddAction(new Action(Action.ActionTypes.ChangeObjectAcc, weapons.Name, false));
-            //capkeydrop.AddAction(new Action(Action.ActionTypes.ChangeObjectAcc, tools.Name, false));
-            //capkeydrop.AddCondition(new Condition(Condition.ConditionTypes.CarryingItem, accesscard.Name, true));
+            Occurrence capkeydrop = new Occurrence("capkeydrop");
+            capkeydrop.SetTrigger(new Drop.Trigger(captainskey));
+            capkeydrop.AddAction(new SetAccessibilityAction(airlock, false));
+            capkeydrop.AddAction(new SetAccessibilityAction(capqtrs, false));
+            capkeydrop.AddAction(new SetAccessibilityAction(qtrs1, false));
+            capkeydrop.AddAction(new SetAccessibilityAction(qtrs2, false));
+            capkeydrop.AddAction(new SetAccessibilityAction(no1qtrs, false));
+            capkeydrop.AddAction(new SetAccessibilityAction(weapons, false));
+            capkeydrop.AddAction(new SetAccessibilityAction(airlock, false));
+            capkeydrop.AddAction(new SetAccessibilityAction(corridor5, false));
+            //capkeydrop.AddCondition(new CarryingItemCondition(accesscard));
 
             #endregion
 
             #region Get to shuttlecraft
 
             //// use the shovel on the airlockpanel to open it
-            //Occurrence shovelonairlock = new Occurrence("shovelonairlock", Parser.ParserFlags.Combine, shovel.Name + " " + airlockpanel.Name,//"shovel airlockpanel",
-            //    new Action(Action.ActionTypes.Message, "You wedge the shovel in between the panel and the bulkhead. As you pull down, you hear cracking sounds from the shovel's handle. You fear the worst, however, in an instant the panel snaps off with a loud crack, and the shovel snaps in two."));
-            //shovelonairlock.AddAction(new Action(Action.ActionTypes.ChangeObjectAcc, airlockpanel.Name, false));
-            //shovelonairlock.AddAction(new Action(Action.ActionTypes.ChangeObjectAcc, exposedwires.Name, true));
-            //shovelonairlock.AddAction(new Action(Action.ActionTypes.RemoveItemFromInv, shovel.Name, null));
-            //shovelonairlock.AddAction(new Action(Action.ActionTypes.AddItemToRoom, exposedwires.Name, airlock.Name));
-            //shovelonairlock.AddAction(new Action(Action.ActionTypes.RemoveItemFromRoom, airlockpanel.Name, airlock.Name));
+            Occurrence shovelonairlock = new Occurrence("shovelonairlock");
+            shovelonairlock.SetTrigger(new Combine.Trigger(shovel, airlockpanel));
+            shovelonairlock.AddAction(new MessageAction("You wedge the shovel in between the panel and the bulkhead. As you pull down, you hear cracking sounds from the shovel's handle. You fear the worst, however, in an instant the panel snaps off with a loud crack, and the shovel snaps in two."));
+            shovelonairlock.AddAction(new SetAccessibilityAction(airlockpanel, false));
+            shovelonairlock.AddAction(new SetAccessibilityAction(exposedwires, true));
+            shovelonairlock.AddAction(new RemoveItemFromInventoryAction(shovel));
+            shovelonairlock.AddAction(new AddItemToRoomAction(airlock, exposedwires));
+            shovelonairlock.AddAction(new RemoveItemFromRoomAction(airlock, airlockpanel));
 
             //// use wire on exposedwires to unlock the shuttlecraft, after having located correct wires with compad
-            //Occurrence wireonexposed = new Occurrence("wireonexposed", Parser.ParserFlags.Combine, "wire exposedwires",
-            //    new Action(Action.ActionTypes.Message, "You fit the wire over the appropriate places, and hear a pleasing click emanate from the door."),
-            //    "You don't know where to put the wire. You need to find out. Perhaps a diagnostic device would shed some light on the situation.");
-            //wireonexposed.AddAction(new Action(Action.ActionTypes.RemoveItemFromInv, wire.Name, null));
-            //wireonexposed.AddAction(new Action(Action.ActionTypes.ChangeObjectAcc, shuttle.Name, true));
-            //wireonexposed.AddAction(new Action(Action.ActionTypes.RemoveItemFromRoom, exposedwires.Name, airlock.Name));
-            //wireonexposed.AddCondition(new Condition(Condition.ConditionTypes.Marker, "hasfoundwire", 1));
+            Occurrence wireonexposed = new Occurrence("wireonexposed");
+            wireonexposed.SetTrigger(new Combine.Trigger(wire, exposedwires));
+            wireonexposed.AddAction(new MessageAction("You fit the wire over the appropriate places, and hear a pleasing click emanate from the door."));
+            wireonexposed.AddAction(new RemoveItemFromInventoryAction(wire));
+            wireonexposed.AddAction(new SetAccessibilityAction(shuttle, true));
+            wireonexposed.AddAction(new RemoveItemFromRoomAction(airlock, exposedwires));
+            wireonexposed.AddCondition(new VariableCondition("hasfoundwire", true));
+            wireonexposed.AddFailureAction(new MessageAction("You don't know where to put the wire. You need to find out. Perhaps a diagnostic device would shed some light on the situation."));
 
             //// use compad on exposedwires to find which to cross
-            //Occurrence compadonexposed = new Occurrence("compadonexposed", Parser.ParserFlags.Combine, "compad exposedwires",
-            //    new Action(Action.ActionTypes.Message, "You hold the compad up to the exposed wires and press a few buttons. It makes some beeping noises, then shows a schematic diagram of the locking mechanism. You eventually locate the appropriate wires to cross in order to release the lock."));
-            //compadonexposed.AddAction(new Action(Action.ActionTypes.ChangeMarker, "hasfoundwire", 1));
+            Occurrence compadonexposed = new Occurrence("compadonexposed");
+            compadonexposed.SetTrigger(new Combine.Trigger(compad, exposedwires));
+            compadonexposed.AddAction(new MessageAction("You hold the compad up to the exposed wires and press a few buttons. It makes some beeping noises, then shows a schematic diagram of the locking mechanism. You eventually locate the appropriate wires to cross in order to release the lock."));
+            compadonexposed.AddAction(new SetVariableAction("hasfoundwire", true));
 
             //// use powerdevice on controlpanel to win game
-            //Occurrence poweronpanel = new Occurrence("poweronpanel", Parser.ParserFlags.Combine, "powerdevice controlpanel",
-            //    new Action(Action.ActionTypes.WinGame, "You plug the power source into the shuttle's control panel and press some buttons. The door behind you closes, and the shuttle departs. You fly it towards the space station in the distance. Well done."));
-
+            Occurrence poweronpanel = new Occurrence("poweronpanel");
+            poweronpanel.SetTrigger(new Combine.Trigger(powerdevice, controlpanel));
+            poweronpanel.AddAction(new WinGameAction("You plug the power source into the shuttle's control panel and press some buttons. The door behind you closes, and the shuttle departs. You fly it towards the space station in the distance. Well done! You escaped!"));
+            
             #endregion
 
             #endregion
@@ -677,33 +684,33 @@ namespace TagEngine.Data
             gs.AddNpc(bill);
             gs.AddNpc(pudlin);
 
-            //occurrences.Add(obsterminal.Name, obsterminal);
-            //occurrences.Add(spannerandbucket.Name, spannerandbucket);
-            //occurrences.Add(entergarden.Name, entergarden);
+            gs.AddOccurrence(obsterminal);
+            gs.AddOccurrence(spannerandbucket);
+            gs.AddOccurrence(plasmagunandcomponent);
+            gs.AddOccurrence(entergarden);
             //occurrences.Add(talkarchet.Name, talkarchet);
             //occurrences.Add(talkarchet1.Name, talkarchet1);
             //occurrences.Add(talkarchet2.Name, talkarchet2);
             //occurrences.Add(talkarchet3.Name, talkarchet3);
             //occurrences.Add(talkarchet4.Name, talkarchet4);
-            //occurrences.Add(giveseeds.Name, giveseeds);
+            gs.AddOccurrence(giveseeds);
             //occurrences.Add(talkbill.Name, talkbill);
             //occurrences.Add(talkbill1.Name, talkbill1);
             //occurrences.Add(talkbill2.Name, talkbill2);
             //occurrences.Add(talkbill3.Name, talkbill3);
             //occurrences.Add(talkbill4.Name, talkbill4);
-            //occurrences.Add(givesandwich.Name, givesandwich);
-            //occurrences.Add(capkey.Name, capkey);
-            //occurrences.Add(capkeydrop.Name, capkeydrop);
-            //occurrences.Add(shovelonairlock.Name, shovelonairlock);
-            //occurrences.Add(plasmagunandcomponent.Name, plasmagunandcomponent);
-            //occurrences.Add(wireonexposed.Name, wireonexposed);
-            //occurrences.Add(compadonexposed.Name, compadonexposed);
-            //occurrences.Add(poweronpanel.Name, poweronpanel);
+            gs.AddOccurrence(givesandwich);
+            gs.AddOccurrence(capkey);
+            gs.AddOccurrence(capkeydrop);
+            gs.AddOccurrence(shovelonairlock);
+            gs.AddOccurrence(wireonexposed);
+            gs.AddOccurrence(compadonexposed);
+            gs.AddOccurrence(poweronpanel);
             //occurrences.Add(talkcaptain2.Name, talkcaptain2);
             //occurrences.Add(talkcaptain.Name, talkcaptain);
-            //occurrences.Add(enterbridge.Name, enterbridge);
-            //occurrences.Add(forkonbox.Name, forkonbox);
-            //occurrences.Add(nofork.Name, nofork);
+            gs.AddOccurrence(enterbridge);
+            gs.AddOccurrence(forkonbox);
+            gs.AddOccurrence(nofork);
 
             gs.Variables.Set("givenseeds", false);
             gs.Variables.Set("talkedarchet", false);

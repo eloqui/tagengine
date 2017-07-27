@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using TagEngine.Entities;
+using TagEngine.Scripting;
 
 namespace TagEngine.Input.Commands
 {
@@ -10,7 +12,15 @@ namespace TagEngine.Input.Commands
     {
         public PickUp() : base("get", new List<string> { "pick", "collect" }) { }
 
-        public override Response Process(Engine engine, Tokeniser tokens)
+        /// <summary>
+        /// Trigger for a pickup command
+        /// </summary>
+        public class Trigger : Trigger<Item>
+        {
+            public Trigger(Item item): base("pickup", item) { }
+        }
+
+        protected override Response ProcessInternal(Engine engine, Tokeniser tokens)
         {
             var ego = engine.GameState.Ego;
 
@@ -40,12 +50,21 @@ namespace TagEngine.Input.Commands
                             ego.Inventory.AddItem(item);
                             ego.CurrentRoom.RemoveItem(item);
 
-                            if (!String.IsNullOrEmpty(item.PickupMessage))
-                            {
-                                return new Response(item.PickupMessage);
-                            }
+                            var response = engine.RunOccurrences(new PickUp.Trigger(item));
 
-                            return new Response("You pick up the " + item.Title + ", and place it in your pack.");
+                            if (!response.HasMessage)
+                            {
+                                if (!String.IsNullOrEmpty(item.PickupMessage))
+                                {
+                                    response.AddMessage(item.PickupMessage);
+                                }
+                                else
+                                {
+
+                                    response.AddMessage("You pick up the " + item.Title + ", and place it in your pack.");
+                                }
+                            }
+                            return response;
                         }
                     }
                 }

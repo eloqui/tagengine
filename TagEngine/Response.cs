@@ -11,7 +11,9 @@ namespace TagEngine
     {
         None,
         Quit,
-        Pause
+        Pause,
+        LoseGame,
+        WinGame
     }
     /// <summary>
     /// The type is an indication to the Client of how a message might be displayed/handled
@@ -68,6 +70,39 @@ namespace TagEngine
         /// </summary>
         public List<ResponseAction> Actions { get; protected set; }
 
+        /// <summary>
+        /// Whether this response is empty
+        /// </summary>
+        public bool Empty
+        {
+            get
+            {
+                return !HasMessage && !HasAction;
+            }
+        }
+
+        /// <summary>
+        /// Whether this response has a message
+        /// </summary>
+        public bool HasMessage
+        {
+            get
+            {
+                return Messages.Count > 0;
+            }
+        }
+
+        /// <summary>
+        /// Whether this response has an action
+        /// </summary>
+        public bool HasAction
+        {
+            get
+            {
+                return Actions.Count > 0;
+            }
+        }
+
 		#endregion
 
 		#region Methods
@@ -92,6 +127,16 @@ namespace TagEngine
         }
 
         /// <summary>
+        /// Construct a response with a response message
+        /// </summary>
+        /// <param name="message"></param>
+        public Response(ResponseMessage message)
+            : this()
+        {
+            AddMessage(message);
+        }
+
+        /// <summary>
         /// Construct a response with a normal message and an action
         /// </summary>
         /// <param name="message"></param>
@@ -100,6 +145,18 @@ namespace TagEngine
             : this(message)
         {
             AddAction(action);
+        }
+
+        /// <summary>
+        /// Merge another response into this one
+        /// </summary>
+        /// <param name="r"></param>
+        public void Merge(Response r)
+        {
+            if (r == null) return;
+
+            Messages.AddRange(r.Messages);
+            Actions.AddRange(r.Actions);
         }
 
         /// <summary>

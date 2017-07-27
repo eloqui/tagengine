@@ -8,15 +8,13 @@ using TagEngine.Entities;
 
 namespace TagEngine.Scripting.Actions
 {
-    class SetExaminableAction : Action<InteractiveEntity, bool>
+    class AddItemToRoomAction : Action<Room, Item>
     {
-        public SetExaminableAction(InteractiveEntity entity, bool isExaminable) : base(entity, isExaminable)
-        {
-        }
+        public AddItemToRoomAction(Room room, Item item) : base(room, item) { }
 
         public override Response DoAction(GameState gs)
         {
-            Param1.IsExaminable = Param2;
+            if (!Param1.HasItem(Param2)) Param1.AddItem(Param2);
 
             return null;
         }

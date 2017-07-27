@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using TagEngine.Entities;
+using TagEngine.Scripting;
 
 namespace TagEngine.Input.Commands
 {
@@ -10,7 +12,15 @@ namespace TagEngine.Input.Commands
     {
         public Examine() : base("examine", null, false) { }
 
-        public override Response Process(Engine engine, Tokeniser tokens)
+        /// <summary>
+        /// Trigger for an examine command
+        /// </summary>
+        public class Trigger : Trigger<InteractiveEntity>
+        {
+            public Trigger(InteractiveEntity entity) : base("examine", entity) { }
+        }
+
+        protected override Response ProcessInternal(Engine engine, Tokeniser tokens)
         {
             var ego = engine.GameState.Ego;
 
@@ -22,6 +32,8 @@ namespace TagEngine.Input.Commands
                 return new Response("Examine what?");
             }
 
+            var response = new Response();
+
             foreach (var token in possibles)
             {
                 if (engine.GameState.IsValidItem(token.Word))
@@ -31,7 +43,9 @@ namespace TagEngine.Input.Commands
                     if (item.IsExaminable && (ego.CurrentRoom.HasItem(item) || ego.IsCarrying(item)))
                     {
                         // an item in the current room or inventory
-                        return new Response(engine.Examine(item, true));
+                        response.AddMessage(item.Examine(true));
+                        response.Merge(engine.RunOccurrences(new Examine.Trigger(item)));
+                        return response;
                     }
                 }
 
@@ -42,7 +56,9 @@ namespace TagEngine.Input.Commands
                     if (npc.IsExaminable && ego.CurrentRoom.HasNpc(npc))
                     {
                         // an npc in the current room
-                        return new Response(engine.Examine(npc, true));
+                        response.AddMessage(npc.Examine(true));
+                        response.Merge(engine.RunOccurrences(new Examine.Trigger(npc)));
+                        return response;
                     }
                 }
 
@@ -51,7 +67,12 @@ namespace TagEngine.Input.Commands
                     // a feature of the current room
                     var feature = ego.CurrentRoom.GetFeature(token.Word);
 
-                    if (feature.IsExaminable) return new Response(engine.Examine(feature, true));
+                    if (feature.IsExaminable)
+                    {
+                        response.AddMessage(feature.Examine(true));
+                        response.Merge(engine.RunOccurrences(new Examine.Trigger(feature)));
+                        return response;
+                    }
                 }
             }
 

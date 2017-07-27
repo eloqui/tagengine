@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 
 namespace TagEngine.Entities
 {
@@ -56,4 +57,14 @@ namespace TagEngine.Entities
             return Engine.Instance.GameState.GetItem(itemName);
         }
 	}
+
+    /// <summary>
+    /// A collection of items
+    /// </summary>
+    [Serializable]
+    public class Items : HashSet<Item>
+    {
+        public Items(params Item[] items) : base(items) { }
+        public Items(IEnumerable<Item> items) : base(items) { }
+    }
 }

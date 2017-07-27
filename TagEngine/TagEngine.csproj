@@ -82,10 +82,19 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Input\Token.cs" />
     <Compile Include="Scripting\Action.cs" />
+    <Compile Include="Scripting\Actions\AddItemToInventoryAction.cs" />
+    <Compile Include="Scripting\Actions\AddItemToRoomAction.cs" />
+    <Compile Include="Scripting\Actions\GiveItemToNpcAction.cs" />
+    <Compile Include="Scripting\Actions\LoseGameAction.cs" />
+    <Compile Include="Scripting\Actions\MoveNpcAction.cs" />
+    <Compile Include="Scripting\Actions\RemoveItemFromInventoryAction.cs" />
+    <Compile Include="Scripting\Actions\RemoveItemFromRoomAction.cs" />
     <Compile Include="Scripting\Actions\SetAccessibilityAction.cs" />
     <Compile Include="Scripting\Actions\SetExaminableAction.cs" />
     <Compile Include="Scripting\Actions\SetVariableAction.cs" />
     <Compile Include="Scripting\Actions\MessageAction.cs" />
+    <Compile Include="Scripting\Actions\SetOccurrenceActiveAction.cs" />
+    <Compile Include="Scripting\Actions\WinGameAction.cs" />
     <Compile Include="Scripting\Condition.cs" />
     <Compile Include="Scripting\Conditions\CarryingItemCondition.cs" />
     <Compile Include="Scripting\Conditions\CurrentRoomCondition.cs" />
@@ -95,7 +104,9 @@
     <Compile Include="Scripting\Conditions\VisitsToRoomCondition.cs" />
     <Compile Include="Scripting\IAction.cs" />
     <Compile Include="Scripting\ICondition.cs" />
+    <Compile Include="Scripting\ITrigger.cs" />
     <Compile Include="Scripting\Occurrence.cs" />
+    <Compile Include="Scripting\Trigger.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

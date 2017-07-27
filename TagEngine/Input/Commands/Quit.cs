@@ -10,7 +10,7 @@ namespace TagEngine.Input.Commands
     {
         public Quit() : base("quit", new List<string> { "exit", "\\q", "bye" }, false) { }
 
-        public override Response Process(Engine engine, Tokeniser tokens)
+        protected override Response ProcessInternal(Engine engine, Tokeniser tokens)
         {
             return new Response("You're leaving so soon?", ResponseAction.Quit);
         }

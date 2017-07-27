@@ -1,10 +1,12 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Linq;
 
 using TagEngine.Entities;
 using TagEngine.Input;
 using TagEngine.Data;
+using TagEngine.Scripting;
 
 namespace TagEngine
 {
@@ -84,17 +86,33 @@ namespace TagEngine
 		/// </summary>
 		Engine()
 		{
-			LoadGame(new GameState());
+
 		}
-        
+
         #endregion
 
         #region Methods
 
-        public void LoadGame(GameState gameState)
+        public void LoadDebugGame() // TODO: combine into LoadGame, but don't want to load gamestate until after command/trigger init
         {
+            // load commands
+            CommandManager.Initialise();
+
+            // load gamestate
+            GameState = DataLoader.GetTestGame();
+        }
+
+        public void LoadGame() // TODO: load new game from filesystem; saved game from filesystem
+        {
+            // TODO: load assemblies for this game
+
             // TODO: reset any other settings/state
-            GameState = gameState;
+
+            // load commands
+            CommandManager.Initialise();
+
+            // TODO: finally, load gamestate
+            //GameState = gameState;
         }
 
 		/// <summary>
@@ -105,51 +123,29 @@ namespace TagEngine
 		public Response ProcessInput(string input)
 		{
 			// tokenise and parse the input string
-			ParserResponse pr = Input.Parser.Parse(input);
+			var pr = Parser.Parse(input);
 
-            Response response;
+            if (pr.Command == null) return new Response(pr.Message);
 
-            if (pr.Command == null)
-            {
-                response = new Response();
-                response.AddMessage(pr.Message);
-            }
-            else
-            {
-                // act upon the input based upon the recognised command
-                response = pr.Command.Process(this, pr.Tokens);
-            }
-
-            return response;
+            // act upon the input based upon the recognised command
+            return pr.Command.Process(this, pr.Tokens);
 		}
-
-        /// <summary>
-        /// Describe an entity
-        /// </summary>
-        /// <param name="item"></param>
-        /// <returns></returns>
-        public string Describe(ILookable item)
-        {
-            return item.Description;
-        }
-
-        /// <summary>
-        /// Examine an entity
-        /// </summary>
-        /// <param name="item"></param>
-        /// <param name="describeIfEmpty">If true, will return the short description if there is no extended description</param>
-        /// <returns></returns>
-        public string Examine(ILookable item, bool describeIfEmpty = false)
-        {
-            if (describeIfEmpty && String.IsNullOrWhiteSpace(item.ExtendedDescription)) return item.Description;
-
-            return item.ExtendedDescription;
-        }
-
-		#endregion
-
-		#region Implementation
         
+        /// <summary>
+        /// Run occurrences matching the trigger
+        /// </summary>
+        /// <param name="t"></param>
+        /// <returns></returns>
+        public Response RunOccurrences(ITrigger t)
+        {
+            var response = new Response();
+            foreach (var occurrence in GameState.GetOccurrences(t))
+            {
+                response.Merge(occurrence.RunActions(GameState));
+            }
+            return response;
+        }
+
 		#endregion
 	}
 }

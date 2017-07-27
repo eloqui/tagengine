@@ -8,15 +8,13 @@ using TagEngine.Entities;
 
 namespace TagEngine.Scripting.Actions
 {
-    class SetExaminableAction : Action<InteractiveEntity, bool>
+    class MoveNpcAction : Action<Npc, Room>
     {
-        public SetExaminableAction(InteractiveEntity entity, bool isExaminable) : base(entity, isExaminable)
-        {
-        }
+        public MoveNpcAction(Npc npc, Room room) : base(npc, room) { }
 
         public override Response DoAction(GameState gs)
         {
-            Param1.IsExaminable = Param2;
+            if (Param1.CurrentRoom != Param2) Param1.MoveTo(Param2);
 
             return null;
         }

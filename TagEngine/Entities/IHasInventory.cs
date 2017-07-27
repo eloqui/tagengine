@@ -9,6 +9,8 @@ namespace TagEngine.Entities
     public interface IHasInventory
     {
         Inventory Inventory { get; }
-        // TODO: add other things here, like item checks etc.
+
+        bool IsCarrying(Item item);
+        bool IsCarrying(string itemName);
     }
 }

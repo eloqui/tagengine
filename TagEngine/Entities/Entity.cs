@@ -24,9 +24,7 @@ namespace TagEngine.Entities
         /// Constructor
         /// </summary>
         /// <param name="name">The name of this entity</param>
-        public Entity(string name) : this(name, Guid.NewGuid())
-        {
-        }
+        public Entity(string name) : this(name, Guid.NewGuid()) { }
 
         /// <summary>
         /// Constructor
@@ -35,8 +33,8 @@ namespace TagEngine.Entities
         /// <param name="id">The ID of this entity</param>
         public Entity(string name, Guid id)
         {
-            this.Name = name;
-            this.Id = id;
+            Name = name;
+            Id = id;
         }
     }
 

@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using TagEngine.Entities;
+using TagEngine.Scripting;
 
 namespace TagEngine.Input.Commands
 {
@@ -10,7 +12,15 @@ namespace TagEngine.Input.Commands
     {
         public Use() : base("use", null) { }
 
-        public override Response Process(Engine engine, Tokeniser tokens)
+        /// <summary>
+        /// Trigger for a Use command
+        /// </summary>
+        public class Trigger : Trigger<Item>
+        {
+            public Trigger(Item item) : base("use", item) { }
+        }
+
+        protected override Response ProcessInternal(Engine engine, Tokeniser tokens)
         {
             var ego = engine.GameState.Ego;
             var possibles = tokens.Unrecognised;
@@ -25,8 +35,9 @@ namespace TagEngine.Input.Commands
 
                         if (ego.IsCarrying(item) || ego.CurrentRoom.HasItem(item))
                         {
-                            // TODO: get result from any associated action objects...
-                            return new Response("You use the " + token.Word);
+                            // get result from any associated occurrences
+                            var response = engine.RunOccurrences(new Use.Trigger(item));
+                            if (!response.Empty) return response;
                         }
                     }
                 }
@@ -36,8 +47,8 @@ namespace TagEngine.Input.Commands
                 {
                     try
                     {
-                        var combineCommand = CommandManager.GetCommand("combine");
-                        return combineCommand.Process(engine, tokens);
+                        // hand off to the combine command
+                        return CommandManager.GetCommand<Combine>().Process(engine, tokens);
                     }
                     catch (CommandNotFoundException)
                     {

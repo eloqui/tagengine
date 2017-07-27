@@ -22,4 +22,33 @@ namespace TagEngine.Entities
 		/// </summary>
 		string ExtendedDescription { get; set; }
 	}
+
+    /// <summary>
+    /// Extension methods for ILookables
+    /// </summary>
+    public static class ILookableExtender
+    {
+        /// <summary>
+        /// Describe an entity
+        /// </summary>
+        /// <param name="item"></param>
+        /// <returns></returns>
+        public static string Describe(this ILookable item)
+        {
+            return item.Description;
+        }
+
+        /// <summary>
+        /// Examine an entity
+        /// </summary>
+        /// <param name="item"></param>
+        /// <param name="describeIfEmpty">If true, will return the short description if there is no extended description</param>
+        /// <returns></returns>
+        public static string Examine(this ILookable item, bool describeIfEmpty = false)
+        {
+            if (describeIfEmpty && String.IsNullOrWhiteSpace(item.ExtendedDescription)) return item.Description;
+
+            return item.ExtendedDescription;
+        }
+    }
 }

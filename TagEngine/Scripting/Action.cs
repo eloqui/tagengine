@@ -30,7 +30,7 @@ namespace TagEngine.Scripting
         /// </summary>
         /// <param name="gs"></param>
         /// <returns></returns>
-        public abstract ResponseMessage DoAction(GameState gs);
+        public abstract Response DoAction(GameState gs);
     }
 
     /// <summary>

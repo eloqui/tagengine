@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.Serialization;
+using TagEngine.Scripting;
 
 namespace TagEngine.Input
 {
@@ -16,7 +17,7 @@ namespace TagEngine.Input
         /// <param name="engine"></param>
         /// <param name="tokens"></param>
         /// <returns></returns>
-        public abstract Response Process(Engine engine, Tokeniser tokens);
+        protected abstract Response ProcessInternal(Engine engine, Tokeniser tokens);
 
         /// <summary>
         /// Get text to display when help is requested for this command
@@ -43,10 +44,7 @@ namespace TagEngine.Input
         /// <summary>
         /// Constructor
         /// </summary>
-        protected Command() : this("", null)
-        {
-
-        }
+        protected Command() : this("", null) { }
 
         /// <summary>
         /// Constructor
@@ -69,6 +67,17 @@ namespace TagEngine.Input
             var words = Synonyms ?? new List<string>();
             words.Insert(0, Word);
             return words.ToArray();
+        }
+
+        /// <summary>
+        /// Process the command
+        /// </summary>
+        /// <param name="engine"></param>
+        /// <param name="tokens"></param>
+        /// <returns></returns>
+        public Response Process(Engine engine, Tokeniser tokens)
+        {
+            return ProcessInternal(engine, tokens);
         }
     }
 
@@ -120,9 +129,6 @@ namespace TagEngine.Input
         /// <returns></returns>
         public static string[] GetCommandWords()
         {
-            // lazy init
-            if (commands == null) Initialise();
-
             return commands.Keys.ToArray();
         }
 
@@ -132,8 +138,6 @@ namespace TagEngine.Input
         /// <returns></returns>
         public static string[] GetPrimaryCommandWords()
         {
-            if (commands == null) Initialise();
-
             return primaryCommands.ToArray();
         }
 
@@ -149,15 +153,29 @@ namespace TagEngine.Input
                 throw new CommandNotFoundException("No command provided");
             }
 
-            // lazy initialise
-            if (commands == null) Initialise();
-
             if (!commands.ContainsKey(command))
             {
                 throw new CommandNotFoundException(command);
             }
 
             return commands[command];
+        }
+
+        /// <summary>
+        /// Get a Command based on type
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <returns></returns>
+        public static ICommand GetCommand<T>() where T : Command
+        {
+            try
+            {
+                return commands.First(x => x.Value is T).Value;
+            }
+            catch (InvalidOperationException ioe)
+            {
+                throw new CommandNotFoundException(typeof(T).Name, ioe);
+            }
         }
 
         /// <summary>
@@ -168,8 +186,6 @@ namespace TagEngine.Input
         /// <returns></returns>
         public static bool IsCommand(string command, int position = 0)
         {
-            if (commands == null) Initialise();
-
             if (commands.ContainsKey(command))
             {
                 // if the command is not in position 0, it must not be a natural command

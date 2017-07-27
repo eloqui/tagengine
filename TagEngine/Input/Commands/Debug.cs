@@ -14,7 +14,8 @@ namespace TagEngine.Input.Commands
         static readonly string[] subCommands = {
                 "variables",
                 "setvariable",
-                "rooms"
+                "getitem",
+                "goroom",
             };
 
         public Debug() : base("debug", null, false) { }
@@ -24,7 +25,7 @@ namespace TagEngine.Input.Commands
             return "Does things to the insides." + Environment.NewLine + GetDebugCommands();
         }
 
-        public override Response Process(Engine engine, Tokeniser tokens)
+        protected override Response ProcessInternal(Engine engine, Tokeniser tokens)
         {
             Response r = new Response();
 
@@ -51,6 +52,54 @@ namespace TagEngine.Input.Commands
                             string value = tokens.GetTokenAtPosition(3).Word; // TODO: cast to type??
                             engine.GameState.Variables.Set(variableName, value);
                             return r;
+                        }
+                        break;
+
+                    case "getitem": // get an intem and put it in inventory (will remain in its current room too)
+                        if (tokens.WordCount < 3)
+                        {
+                            r.AddMessage("debug getitem [item]", ResponseMessageType.Warning);
+                        }
+                        else
+                        {
+                            var itemName = tokens.GetTokenAtPosition(2).Word;
+                            if (engine.GameState.IsValidItem(itemName))
+                            {
+                                var item = engine.GameState.GetItem(itemName);
+                                if (!engine.GameState.Ego.Inventory.Contains(item))
+                                {
+                                    engine.GameState.Ego.Inventory.AddItem(item);
+                                    r.AddMessage("Added the " + item.Name + " to player inventory");
+                                    return r;
+                                } else
+                                {
+                                    r.AddMessage("Already have that in inventory", ResponseMessageType.Warning);
+                                }
+                            }
+                            else
+                            {
+                                r.AddMessage("Not valid item >" + itemName + "<", ResponseMessageType.Error);
+                            }
+                        }
+                        break;
+
+                    case "goroom": // move ego to a particular room
+                        if (tokens.WordCount < 3)
+                        {
+                            r.AddMessage("debug goroom [room]", ResponseMessageType.Warning);
+                        } else
+                        {
+                            var roomName = tokens.GetTokenAtPosition(2).Word;
+                            if (engine.GameState.IsValidRoom(roomName))
+                            {
+                                var room = engine.GameState.GetRoom(roomName);
+                                engine.GameState.Ego.MoveTo(room);
+                                r.AddMessage("Moved player to room " + room.Name);
+                                return r;
+                            } else
+                            {
+                                r.AddMessage("Not valid room >" + roomName + "<", ResponseMessageType.Error);
+                            }
                         }
                         break;
 

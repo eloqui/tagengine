@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
-using System.Text;
-
+using System.Linq;
 using TagEngine.Entities;
 using TagEngine.Scripting;
 
@@ -56,6 +55,9 @@ namespace TagEngine.Data
 
         #region Initialisation
 
+        /// <summary>
+        /// Constructor
+        /// </summary>
         public GameState()
 		{
             IsSetupFinalised = false;
@@ -73,11 +75,18 @@ namespace TagEngine.Data
 			Variables.Set("test2", 123.456);
         }
         
+        /// <summary>
+        /// Finalise setup stage and restrict adding new entities
+        /// </summary>
         public void FinaliseSetup()
         {
             IsSetupFinalised = true;
         }
 
+        /// <summary>
+        /// Add an item
+        /// </summary>
+        /// <param name="item"></param>
         public void AddItem(Item item)
         {
             if (IsSetupFinalised) throw new InvalidOperationException("Cannot add items after game state setup is finalised");
@@ -85,6 +94,10 @@ namespace TagEngine.Data
             Items.Add(item.Name, item);
         }
 
+        /// <summary>
+        /// Add a room
+        /// </summary>
+        /// <param name="room"></param>
         public void AddRoom(Room room)
         {
             if (IsSetupFinalised) throw new InvalidOperationException("Cannot add rooms after game state setup is finalised");
@@ -92,6 +105,10 @@ namespace TagEngine.Data
             Rooms.Add(room.Name, room);
         }
 
+        /// <summary>
+        /// Add an NPC
+        /// </summary>
+        /// <param name="npc"></param>
         public void AddNpc(Npc npc)
         {
             if (IsSetupFinalised) throw new InvalidOperationException("Cannot add NPCs after game state setup is finalised");
@@ -99,6 +116,22 @@ namespace TagEngine.Data
             Npcs.Add(npc.Name, npc);
         }
 
+        /// <summary>
+        /// Add an occurrence
+        /// </summary>
+        /// <param name="occurrence"></param>
+        public void AddOccurrence(Occurrence occurrence)
+        {
+            if (IsSetupFinalised) throw new InvalidOperationException("Cannot add occurrences after game setup is finalised");
+
+            Occurrences.Add(occurrence.Name, occurrence);
+        }
+        
+        /// <summary>
+        /// Set the player object
+        /// </summary>
+        /// <param name="ego"></param>
+        /// <param name="inRoom"></param>
         public void SetEgo(Ego ego, Room inRoom = null)
         {
             if (IsSetupFinalised) throw new InvalidOperationException("Cannot set Ego after game state setup is finalised");
@@ -107,6 +140,10 @@ namespace TagEngine.Data
             if (inRoom != null) Ego.MoveTo(inRoom);
         }
 
+        /// <summary>
+        /// Set the welcome message shown to players when they start the game
+        /// </summary>
+        /// <param name="welcomeMessage"></param>
         public void SetWelcomeMessage(string welcomeMessage)
         {
             if (IsSetupFinalised) throw new InvalidOperationException("Cannot set welcome message after game state setup is finalised");
@@ -118,6 +155,10 @@ namespace TagEngine.Data
 
         #region Methods
 
+        /// <summary>
+        /// Set the current location of the player
+        /// </summary>
+        /// <param name="room"></param>
         public void SetCurrentLocation(Room room)
         {
             Ego.MoveTo(room);
@@ -229,6 +270,20 @@ namespace TagEngine.Data
             if (!IsValidNpc(npcName)) return null;
 
             return Npcs[npcName];
+        }
+
+        /// <summary>
+        /// Get any occurrences matching the trigger
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <returns></returns>
+        public IEnumerable<Occurrence> GetOccurrences(ITrigger t)
+        {
+            // get all active occurrences with trigger of type T, with matching subjects and true conditions
+            return from occurrence in Occurrences.Values
+                   where occurrence.IsActive
+                      && occurrence.Trigger.Matches(t)
+                   select occurrence;
         }
 
         #endregion

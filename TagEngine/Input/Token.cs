@@ -12,7 +12,7 @@ namespace TagEngine.Input
 	/// <summary>
 	/// Statuses of tokens
 	/// </summary>
-	public enum TokenStatus { Ignored, Unrecognised, Direction, Command };
+	public enum TokenType { Ignored, Unrecognised, Direction, Command };
 
 	/// <summary>
 	/// A parser token
@@ -27,7 +27,7 @@ namespace TagEngine.Input
 		/// <summary>
 		/// The status of this token
 		/// </summary>
-		public TokenStatus Status;
+		public TokenType Type;
 
         /// <summary>
         /// The position of this token in the input line (0-based)
@@ -40,10 +40,10 @@ namespace TagEngine.Input
 		/// <param name="word">The word string</param>
 		/// <param name="status">The status of the word</param>
         /// <param name="position">The position this token was in the input</param>
-		public Token(string word, TokenStatus status, int position)
+		public Token(string word, TokenType status, int position)
 		{
 			Word = word;
-			Status = status;
+			Type = status;
             Position = position;
 		}
 
@@ -55,7 +55,7 @@ namespace TagEngine.Input
         /// <returns></returns>
         public static bool operator ==(Token x, Token y)
         {
-            return (x.Word == y.Word && x.Status == y.Status && x.Position == y.Position);
+            return (x.Word == y.Word && x.Type == y.Type && x.Position == y.Position);
         }
 
         /// <summary>
@@ -66,7 +66,7 @@ namespace TagEngine.Input
         /// <returns></returns>
         public static bool operator !=(Token x, Token y)
         {
-            return !(x.Word == y.Word && x.Status == y.Status && x.Position == y.Position);
+            return !(x.Word == y.Word && x.Type == y.Type && x.Position == y.Position);
         }
 
         /// <summary>
@@ -124,7 +124,7 @@ namespace TagEngine.Input
 			get
 			{
                 var unrecognised = from token in tokens
-                                   where token.Status == TokenStatus.Unrecognised
+                                   where token.Type == TokenType.Unrecognised
                                    select token;
                 return unrecognised.ToList();
 			}
@@ -138,7 +138,7 @@ namespace TagEngine.Input
 			get
 			{
                 foreach (Token t in tokens)
-                    if (t.Status == TokenStatus.Direction)
+                    if (t.Type == TokenType.Direction)
                         return t.Word;
                 return null;
 			}
@@ -227,7 +227,7 @@ namespace TagEngine.Input
 				if (WordStore.IsIgnored(element))
 				{
 					// token added as an ignored word
-					tokens.Add(new Token(element, TokenStatus.Ignored, position));
+					tokens.Add(new Token(element, TokenType.Ignored, position));
 					IgnoreCount++;
 				}
 				else
@@ -236,17 +236,17 @@ namespace TagEngine.Input
 					// but that doesn't matter (allows "go back" and "back")
 					if (WordStore.IsDirection(element))
 					{
-						tokens.Add(new Token(element, TokenStatus.Direction, position));
+						tokens.Add(new Token(element, TokenType.Direction, position));
 					}
                     // this is a command, but only accept the first command found
 					else if (CommandManager.IsCommand(element, position) && Command == default(Token))
 					{
-						Command = new Token(element, TokenStatus.Command, position);
+						Command = new Token(element, TokenType.Command, position);
 						tokens.Add(Command);
 					}
 					else
 					{
-						tokens.Add(new Token(element, TokenStatus.Unrecognised, position));
+						tokens.Add(new Token(element, TokenType.Unrecognised, position));
 					}
 				}
 
@@ -338,9 +338,9 @@ namespace TagEngine.Input
 		{
 			Dictionary<string, object[]> tests = new Dictionary<string, object[]>();
 
-			tests.Add("get the ball north", new object[] { TokenStatus.Command, TokenStatus.Ignored, TokenStatus.Unrecognised, TokenStatus.Direction });
-			tests.Add("go back", new object[] { TokenStatus.Command, TokenStatus.Direction });
-			tests.Add("ball ball get ball", new object[] { TokenStatus.Unrecognised, TokenStatus.Unrecognised, TokenStatus.Command, TokenStatus.Unrecognised });
+			tests.Add("get the ball north", new object[] { TokenType.Command, TokenType.Ignored, TokenType.Unrecognised, TokenType.Direction });
+			tests.Add("go back", new object[] { TokenType.Command, TokenType.Direction });
+			tests.Add("ball ball get ball", new object[] { TokenType.Unrecognised, TokenType.Unrecognised, TokenType.Command, TokenType.Unrecognised });
 
 			foreach (KeyValuePair<string, object[]> kvp in tests)
 			{
@@ -349,7 +349,7 @@ namespace TagEngine.Input
 				foreach (Token t in ts)
 				{
 					//Console.Out.WriteLine(ii.ToString() + ": " + t.Word + "/" + t.Status.ToString());
-					Assert.That(t.Status, Is.EqualTo(kvp.Value[ii]));
+					Assert.That(t.Type, Is.EqualTo(kvp.Value[ii]));
 					ii++;
 				}
 			}

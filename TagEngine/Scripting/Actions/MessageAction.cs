@@ -13,9 +13,9 @@ namespace TagEngine.Scripting.Actions
         {
         }
 
-        public override ResponseMessage DoAction(GameState gs)
+        public override Response DoAction(GameState gs)
         {
-            return new ResponseMessage(Param1, Param2);
+            return new Response(new ResponseMessage(Param1, Param2));
         }
     }
 }

@@ -11,7 +11,7 @@ namespace TagEngine.Input.Commands
     {
         public Help() : base("help", null, false) { }
 
-        public override Response Process(Engine engine, Tokeniser tokens)
+        protected override Response ProcessInternal(Engine engine, Tokeniser tokens)
         {
             if (tokens.WordCount > 1)
             {

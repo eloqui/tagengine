@@ -12,7 +12,7 @@ namespace TagEngine.Scripting.Actions
         {
         }
         
-        public override ResponseMessage DoAction(GameState gs)
+        public override Response DoAction(GameState gs)
         {
             gs.Variables.Set(Param1, Param2);
 

@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using TagEngine.Entities;
+using TagEngine.Scripting;
 
 namespace TagEngine.Input.Commands
 {
@@ -11,14 +12,29 @@ namespace TagEngine.Input.Commands
     {
         public Combine() : base("combine", new List<string> { "join" }) { }
 
-        public override Response Process(Engine engine, Tokeniser tokens)
+        /// <summary>
+        /// A trigger for the combine command
+        /// </summary>
+        public class Trigger : Trigger<Items>
+        {
+            public Trigger(Items items) : base("combine", items) { }
+            public Trigger(params Item[] items) : this(new Items(items)) { }
+
+            protected override bool SubjectEquals(Items subject)
+            {
+                // we override this so we don't care about the order of the subject items
+                return Subject.SetEquals(subject);
+            }
+        }
+
+        protected override Response ProcessInternal(Engine engine, Tokeniser tokens)
         {
             var ego = engine.GameState.Ego;
             var possibles = tokens.Unrecognised;
 
             if (possibles.Count > 1)
             {
-                var itemsToCombine = new List<Item>();
+                var itemsToCombine = new Items();
 
                 foreach (var token in possibles)
                 {
@@ -32,7 +48,7 @@ namespace TagEngine.Input.Commands
                         }
                     }
                 }
-
+                
                 if (itemsToCombine.Count < 1)
                 {
                     return new Response("Combine what?");
@@ -43,8 +59,9 @@ namespace TagEngine.Input.Commands
                     return new Response("What should I combine that with?");
                 }
 
-                // TODO: get result from any associated actions..
-                return new Response("You combine the items.");
+                // get result from any associated occurrences
+                var response = engine.RunOccurrences(new Combine.Trigger(itemsToCombine));
+                if (!response.Empty) return response;
             }
 
             return new Response("Combine what?");

@@ -3,12 +3,13 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using TagEngine.Data;
 
 namespace TagEngine.Scripting
 {
-    public interface IAction
+    public interface ITrigger
     {
-        Response DoAction(GameState gs);
+        string Name { get; }
+
+        bool Matches(ITrigger t);
     }
 }

@@ -26,6 +26,11 @@ namespace TagEngine.Scripting
         readonly List<ICondition> conditions;
 
         /// <summary>
+        /// The trigger for this occurrence
+        /// </summary>
+        public ITrigger Trigger { get; protected set; }
+
+        /// <summary>
         /// Indicates if the occurrence is active or not
         /// </summary>
         public bool IsActive { get; set; }
@@ -61,12 +66,24 @@ namespace TagEngine.Scripting
         /// 
         /// </summary>
         /// <param name="gs"></param>
-        public void RunActions(GameState gs)
+        public Response RunActions(GameState gs)
         {
-            foreach (var action in actions)
+            var r = new Response();
+            if (CheckConditions(gs))
             {
-                //action.DoAction();
+                foreach (var action in actions)
+                {
+                    r.Merge(action.DoAction(gs));
+                }
             }
+            else
+            {
+                foreach (var action in failureActions)
+                {
+                    r.Merge(action.DoAction(gs));
+                }
+            }
+            return r;
         }
 
         /// <summary>
@@ -94,6 +111,15 @@ namespace TagEngine.Scripting
         public void AddCondition(ICondition condition)
         {
             conditions.Add(condition);
+        }
+
+        //public void SetTrigger<T>(params object[] args) where T : ITrigger
+        //{
+
+        //}
+        public void SetTrigger(ITrigger t)
+        {
+            Trigger = t;
         }
     }
 

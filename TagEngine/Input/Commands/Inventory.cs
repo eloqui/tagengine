@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using TagEngine.Scripting;
 
 namespace TagEngine.Input.Commands
 {
@@ -10,7 +11,20 @@ namespace TagEngine.Input.Commands
     {
         public Inventory() : base("inv", new List<string> { "inventory", "carrying", "pack" }) { }
 
-        public override Response Process(Engine engine, Tokeniser tokens)
+        /// <summary>
+        /// Trigger for an inventory view command
+        /// </summary>
+        public class Trigger : Trigger<object>
+        {
+            public Trigger(object subject = null) : base("inv", subject) { }
+
+            protected override bool SubjectEquals(object subject)
+            {
+                return true;
+            }
+        }
+
+        protected override Response ProcessInternal(Engine engine, Tokeniser tokens)
         {
             var ego = engine.GameState.Ego;
 
@@ -32,7 +46,11 @@ namespace TagEngine.Input.Commands
             // append total weight carried
             sb.Append(Environment.NewLine + "Weighing: " + ego.Inventory.TotalWeight);
 
-            return new Response(sb.ToString());
+            var response = new Response(sb.ToString());
+
+            response.Merge(engine.RunOccurrences(new Inventory.Trigger()));
+
+            return response;
         }
     }
 }

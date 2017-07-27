@@ -3,6 +3,7 @@ using System.Text;
 
 using TagEngine;
 using TagEngine.Data;
+using TagEngine.Entities;
 
 namespace TagConsole
 {
@@ -56,10 +57,11 @@ namespace TagConsole
             var engine = Engine.Instance;
 
             // TODO: remove this debug guff
-            engine.LoadGame(DataLoader.GetTestGame());
+            engine.LoadDebugGame();
+            //engine.LoadGame();
             
             WriteLine(engine.GameState.WelcomeMessage);
-            WriteLine(engine.Describe(engine.GameState.Ego.CurrentRoom));
+            WriteLine(engine.GameState.Ego.CurrentRoom.Describe());
 
             bool finished = false;
 			while (!finished)
@@ -99,6 +101,8 @@ namespace TagConsole
                     switch (action)
                     {
                         case ResponseAction.Quit:
+                        case ResponseAction.LoseGame:
+                        case ResponseAction.WinGame:
                             finished = true;
                             break;
 

@@ -14,7 +14,7 @@ namespace TagEngine.Scripting.Actions
         {
         }
 
-        public override ResponseMessage DoAction(GameState gs)
+        public override Response DoAction(GameState gs)
         {
             Param1.IsAccessible = Param2;
 
