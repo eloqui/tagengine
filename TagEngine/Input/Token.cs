@@ -12,7 +12,7 @@ namespace TagEngine.Input
 	/// <summary>
 	/// Statuses of tokens
 	/// </summary>
-	public enum TokenType { Ignored, Unrecognised, Direction, Command };
+	public enum TokenType { Ignored, Unrecognised, Direction, Command, Preposition };
 
 	/// <summary>
 	/// A parser token
@@ -232,9 +232,13 @@ namespace TagEngine.Input
 				}
 				else
 				{
-					// this will add "back" as both a direction and a command
-					// but that doesn't matter (allows "go back" and "back")
-					if (WordStore.IsDirection(element))
+                    // this is a preposition
+                    if (WordStore.IsPreposition(element))
+                    {
+                        tokens.Add(new Token(element, TokenType.Preposition, position));
+                    }
+                    // this is a direction
+					else if (WordStore.IsDirection(element))
 					{
 						tokens.Add(new Token(element, TokenType.Direction, position));
 					}

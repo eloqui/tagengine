@@ -16,7 +16,7 @@ namespace TagEngine.Input
         /// <summary>
         /// Any synonyms that are considered synonyms of the command word
         /// </summary>
-        List<string> Synonyms { get; }
+        List<string> Aliases { get; }
 
         /// <summary>
         /// Natural syntax commands can be placed anywhere in the input, non-natural must be first word

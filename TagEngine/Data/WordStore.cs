@@ -14,10 +14,98 @@ namespace TagEngine.Data
         // TODO: refactor this shit out of here. It was a good idea but it's not working.
 
         /// <summary>
-        /// Words that are ignored in the input. (e.g. conjunctions, prepositions, etc.)
+        /// Prepositions
         /// </summary>
-		static string[] ignore = {
-			"the", "a", "an", "is", "of", "on", "for", "by", "at", "what", "when", "why", "how", "do", "from", "who", "where", "some", "to", "with"
+        static readonly string[] prepositions =
+        {
+            "aboard",
+            "about",
+            "above",
+            "across",
+            "after",
+            "against",
+            "along",
+            "amid",
+            "among",
+            "anti",
+            "around",
+            "as",
+            "at",
+            "before",
+            "behind",
+            "below",
+            "beneath",
+            "beside",
+            "besides",
+            "between",
+            "beyond",
+            "but",
+            "by",
+            "concerning",
+            "considering",
+            "despite",
+            "down",
+            "during",
+            "except",
+            "excepting",
+            "excluding",
+            "following",
+            "for",
+            "from",
+            "in",
+            "inside",
+            "into",
+            "like",
+            "minus",
+            "near",
+            "of",
+            "off",
+            "on",
+            "onto",
+            "opposite",
+            "outside",
+            "over",
+            "past",
+            "per",
+            "plus",
+            "regarding",
+            "round",
+            "save",
+            "since",
+            "than",
+            "through",
+            "to",
+            "toward",
+            "towards",
+            "under",
+            "underneath",
+            "unlike",
+            "until",
+            "up",
+            "upon",
+            "versus",
+            "via",
+            "with",
+            "within",
+            "without",
+        };
+
+        /// <summary>
+        /// Words that are ignored in the input. (e.g. conjunctions, particles, etc.)
+        /// </summary>
+		static readonly string[] ignore = {
+			"the",
+            "a",
+            "an",
+            "is",
+            "what",
+            "when",
+            "why",
+            "how",
+            "do",
+            "who",
+            "where",
+            "some",
 		};
 
         /// <summary>
@@ -27,7 +115,7 @@ namespace TagEngine.Data
         /// Must be in the order: North, South, East, West, Up, Down, Back
         /// </remarks>
         /// <seealso cref="GetDirectionWord(Direction)"/>
-		static string[] directions = {
+		static readonly string[] directions = {
 			"north", "south", "east", "west", "up", "down", "back"
 		};
 
@@ -37,12 +125,23 @@ namespace TagEngine.Data
 		/// <param name="word">The word to check</param>
 		/// <returns>True if the word is ignored</returns>
 		public static bool IsIgnored(string word)
-		{
-			foreach (string ign in ignore)
-				if (ign == word) return true;
+        {
+            if (String.IsNullOrEmpty(word)) return false;
 
-			return false;
-		}
+            return Array.IndexOf(ignore, word) >= 0;
+        }
+
+        /// <summary>
+        /// Checks if a given word is a preposition
+        /// </summary>
+        /// <param name="word"></param>
+        /// <returns></returns>
+        public static bool IsPreposition(string word)
+        {
+            if (String.IsNullOrEmpty(word)) return false;
+
+            return Array.IndexOf(prepositions, word) >= 0;
+        }
 
 		/// <summary>
 		/// Checks whether a given word is a direction
@@ -50,12 +149,11 @@ namespace TagEngine.Data
 		/// <param name="word">The word to check</param>
 		/// <returns>True if the word is a direction</returns>
 		public static bool IsDirection(string word)
-		{
-			foreach (string dir in directions)
-				if (word == dir) return true;
+        {
+            if (String.IsNullOrEmpty(word)) return false;
 
-			return false;
-		}
+            return Array.IndexOf(directions, word) >= 0;
+        }
 
         /// <summary>
         /// Get the word for a direction

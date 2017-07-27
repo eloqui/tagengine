@@ -6,6 +6,51 @@ using TagEngine.Scripting;
 
 namespace TagEngine.Input
 {
+    /*
+    again            repeat the last command
+    brief            use long and short room descriptions
+    die              quit the game
+    fullscore        show how your score was achieved
+    inventory        list your possessions
+    inventory wide   paragraphed inventory lists
+    inventory tall   one item per line inventory lists
+    long             always use long room descriptions
+    normal           use long and short room descriptions
+    noscript         turn transcripting off
+    notify on/off    turn score notification on and off
+    nouns            show current settings of "it", "him", "her"
+    objects          list the objects you have held
+    oops <word>      correct mistake in previous input
+    places           list the places you have been
+    pronouns         show current settings of "it", "him", "her"
+    quit             quit the game
+    quotes on/off    turn the display of quotations on and off
+    restart          start the game again from the beginning
+    restore          restore a saved game from a file
+    save             save the game to a file
+    score            show your current score
+    script on/off    start and stop transcription to a file
+    short            always use short room descriptions
+    superbrief       always use short room descriptions
+    undo             undo last command, if possible
+    unscript         turn transcripting off
+    verbose          always use long room descriptions
+    verify           check that the story file is undamaged
+    version          give version and release numbers
+    wait             do nothing for a turn
+
+Abbreviations:
+
+    g for again
+    i for inventory
+    l for look
+    n for north (and so on)
+    o for oops
+    q for quit
+    x for examine
+    z for wait (short for "zzz")
+    */
+
     /// <summary>
     /// Base class for commands
     /// </summary>
@@ -32,9 +77,9 @@ namespace TagEngine.Input
         public string Word { get; protected set; }
 
         /// <summary>
-        /// Synonym words for the command
+        /// Alias words for the command
         /// </summary>
-        public List<string> Synonyms { get; protected set; }
+        public List<string> Aliases { get; protected set; }
 
         /// <summary>
         /// Natural syntax commands can be placed anywhere in the input, non-natural must be first word
@@ -50,11 +95,11 @@ namespace TagEngine.Input
         /// Constructor
         /// </summary>
         /// <param name="word"></param>
-        /// <param name="synonyms"></param>
-        protected Command(string word, List<string> synonyms, bool isNaturalSyntax = true)
+        /// <param name="aliases"></param>
+        protected Command(string word, List<string> aliases, bool isNaturalSyntax = true)
         {
             Word = word;
-            Synonyms = synonyms;
+            Aliases = aliases;
             IsNaturalSyntax = isNaturalSyntax;
         }
 
@@ -64,7 +109,7 @@ namespace TagEngine.Input
         /// <returns></returns>
         public string[] GetCommandWords()
         {
-            var words = Synonyms ?? new List<string>();
+            var words = Aliases ?? new List<string>();
             words.Insert(0, Word);
             return words.ToArray();
         }
@@ -108,16 +153,24 @@ namespace TagEngine.Input
             var subClasses =
                 from assembly in AppDomain.CurrentDomain.GetAssemblies()
                 from type in assembly.GetTypes()
-                //where type.IsSubclassOf(typeof(ICommand))
+                //where type.IsSubclassOf(typeof(Command))
                 where typeof(ICommand).IsAssignableFrom(type) && type.IsClass && !type.IsAbstract
                 select type;
 
             foreach (var type in subClasses)
             {
                 var c = (ICommand)Activator.CreateInstance(type);
+                if (primaryCommands.Contains(c.Word))
+                {
+                    throw new DuplicateCommandException(c.Word + " is a duplicate command");
+                }
                 primaryCommands.Add(c.Word);
                 foreach (var word in c.GetCommandWords())
                 {
+                    if (commands.ContainsKey(word))
+                    {
+                        throw new DuplicateCommandException(c.Word + " is a duplicate command or alias");
+                    }
                     commands.Add(word, c);
                 }
             }
@@ -195,6 +248,26 @@ namespace TagEngine.Input
             }
 
             return false;
+        }
+    }
+
+    [Serializable]
+    internal class DuplicateCommandException : Exception
+    {
+        public DuplicateCommandException()
+        {
+        }
+
+        public DuplicateCommandException(string message) : base(message)
+        {
+        }
+
+        public DuplicateCommandException(string message, Exception innerException) : base(message, innerException)
+        {
+        }
+
+        protected DuplicateCommandException(SerializationInfo info, StreamingContext context) : base(info, context)
+        {
         }
     }
 

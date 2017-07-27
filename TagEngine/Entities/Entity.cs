@@ -10,6 +10,9 @@ namespace TagEngine.Entities
     [Serializable]
     public class Entity
     {
+        // TODO: add stats (e.g. strength, dex, int, vit etc.)
+        // TODO: add xp and levels (probably in subclass)
+
         /// <summary>
         /// Unique identifier for this object
         /// </summary>

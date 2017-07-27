@@ -10,6 +10,8 @@ namespace TagEngine.Entities
 	[Serializable]
 	public class Npc : MovableEntity, IHasInventory
 	{
+        // TODO: add AI behaviours, e.g. Wander, Hostile etc.
+
 		#region Fields
         
 		/// <summary>
@@ -77,8 +79,28 @@ namespace TagEngine.Entities
             };
         }
 
-		#endregion
-        
+        #endregion
+
+        /// <summary>
+        /// Check if this NPC is carrying an item
+        /// </summary>
+        /// <param name="item"></param>
+        /// <returns></returns>
+        public bool IsCarrying(Item item)
+        {
+            return Inventory.HasItem(item);
+        }
+
+        /// <summary>
+        /// Check if this NPC is carrying an item
+        /// </summary>
+        /// <param name="itemName"></param>
+        /// <returns></returns>
+        public bool IsCarrying(string itemName)
+        {
+            return Inventory.HasItem(itemName);
+        }
+
         /// <summary>
         /// Get an NPC by casting from the name
         /// </summary>
@@ -87,5 +109,5 @@ namespace TagEngine.Entities
         {
             return Engine.Instance.GameState.GetNpc(npcName);
         }
-	}
+    }
 }
