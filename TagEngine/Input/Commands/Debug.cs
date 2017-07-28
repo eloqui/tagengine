@@ -71,10 +71,9 @@ namespace TagEngine.Input.Commands
                                     engine.GameState.Ego.Inventory.AddItem(item);
                                     r.AddMessage("Added the " + item.Name + " to player inventory");
                                     return r;
-                                } else
-                                {
-                                    r.AddMessage("Already have that in inventory", ResponseMessageType.Warning);
                                 }
+
+                                r.AddMessage("Already have that in inventory", ResponseMessageType.Warning);
                             }
                             else
                             {
@@ -87,7 +86,8 @@ namespace TagEngine.Input.Commands
                         if (tokens.WordCount < 3)
                         {
                             r.AddMessage("debug goroom [room]", ResponseMessageType.Warning);
-                        } else
+                        }
+                        else
                         {
                             var roomName = tokens.GetTokenAtPosition(2).Word;
                             if (engine.GameState.IsValidRoom(roomName))
@@ -96,10 +96,9 @@ namespace TagEngine.Input.Commands
                                 engine.GameState.Ego.MoveTo(room);
                                 r.AddMessage("Moved player to room " + room.Name);
                                 return r;
-                            } else
-                            {
-                                r.AddMessage("Not valid room >" + roomName + "<", ResponseMessageType.Error);
                             }
+
+                            r.AddMessage("Not valid room >" + roomName + "<", ResponseMessageType.Error);
                         }
                         break;
 

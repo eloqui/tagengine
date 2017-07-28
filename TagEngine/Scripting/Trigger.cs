@@ -27,7 +27,7 @@ namespace TagEngine.Scripting
         /// Constructor
         /// </summary>
         /// <param name="name"></param>
-        public Trigger(string name, TData1 subject)
+        protected Trigger(string name, TData1 subject)
         {
             Name = name;
             Subject = subject;
@@ -77,7 +77,7 @@ namespace TagEngine.Scripting
         /// <param name="name"></param>
         /// <param name="subject"></param>
         /// <param name="subject2"></param>
-        public Trigger(string name, TData1 subject, TData2 subject2) : base(name, subject)
+        protected Trigger(string name, TData1 subject, TData2 subject2) : base(name, subject)
         {
             Subject2 = subject2;
         }

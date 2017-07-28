@@ -11,7 +11,7 @@ namespace OddShip
 	{
 		public static void run(GameState gs)
 		{
-			
+            var ego = gs.Ego;
 		}
 	}
 }

@@ -50,11 +50,13 @@ namespace TagEngine.Input.Commands
                 {
                     return new Response("Give who what?");
                 }
-                else if (item == null)
+
+                if (item == null)
                 {
                     return new Response("Give " + npc.Name + " what?");
                 }
-                else if (npc == null)
+
+                if (npc == null)
                 {
                     return new Response("Give the " + item.Name + " to whom?");
                 }

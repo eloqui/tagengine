@@ -29,7 +29,7 @@ namespace TagConsole
 		#region Constructor
 
 		/// <summary>
-		/// Constructor
+		/// Initializes a new instance of the <see cref="T:TagConsole.ConsoleRunner"/> class.
 		/// </summary>
 		public ConsoleRunner()
 		{
@@ -37,6 +37,16 @@ namespace TagConsole
 			consoleHeight = Console.BufferHeight;
 			consoleWidth = Console.BufferWidth;
 		}
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="T:TagConsole.ConsoleRunner"/> class.
+        /// </summary>
+        /// <param name="args">Arguments.</param>
+        public ConsoleRunner(string[] args) : this()
+        {
+            // TODO: handle command line arguments (maybe find a lib to do it?)
+            if (args.Length > 1) { }
+        }
 
 		#endregion
 
@@ -200,7 +210,7 @@ namespace TagConsole
 		/// <param name="args"></param>
 		static void Main(string[] args)
 		{
-			ConsoleRunner runner = new ConsoleRunner();
+			ConsoleRunner runner = new ConsoleRunner(args);
 			runner.Play();
 		}
     }

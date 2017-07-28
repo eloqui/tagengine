@@ -252,7 +252,7 @@ Abbreviations:
     }
 
     [Serializable]
-    internal class DuplicateCommandException : Exception
+    class DuplicateCommandException : Exception
     {
         public DuplicateCommandException()
         {

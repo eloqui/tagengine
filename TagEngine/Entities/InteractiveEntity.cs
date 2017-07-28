@@ -6,9 +6,19 @@ namespace TagEngine.Entities
 	/// An entity that can be interacted with by the player
 	/// </summary>
 	[Serializable]
-	public class InteractiveEntity : Entity, ILookable
+	public abstract class InteractiveEntity : Entity, ILookable
 	{
-		#region Properties
+        #region Properties & Fields
+
+        /// <summary>
+        /// The short description of this entity
+        /// </summary>
+        protected string description;
+
+        /// <summary>
+        /// The extended description of this entity
+        /// </summary>
+        protected string extendedDescription = "";
 
         /// <summary>
         /// A name suitable for output
@@ -18,12 +28,18 @@ namespace TagEngine.Entities
 		/// <summary>
 		/// The short description of this object
 		/// </summary>
-		public virtual string Description { get; set; }
+        public virtual string Description { 
+            get { return description; } 
+            set { description = value; }
+        }
 
         /// <summary>
         /// The extended description of this object
         /// </summary>
-        public virtual string ExtendedDescription { get; set; } = "";
+        public virtual string ExtendedDescription {
+            get { return extendedDescription; }
+            set { extendedDescription = value; }
+        }
 
         /// <summary>
         /// Whether this object can be examined by the user
@@ -45,11 +61,11 @@ namespace TagEngine.Entities
 		/// <param name="name">The new object's name</param>
 		/// <param name="title">The new object's title</param>
 		/// <param name="description">The new object's description</param>
-		public InteractiveEntity(string name, string title, string description, bool isAccessible = false)
+		protected InteractiveEntity(string name, string title, string description, bool isAccessible = false)
 			: base(name)
 		{
 			Title = title;
-			Description = description;
+			this.description = description;
             IsAccessible = isAccessible;
 		}
 
@@ -60,10 +76,10 @@ namespace TagEngine.Entities
 		/// <param name="title">The new object's title</param>
 		/// <param name="description">The new object's description</param>
 		/// <param name="extendedDescription">The new object's extended description</param>
-		public InteractiveEntity(string name, string title, string description, string extendedDescription, bool isAccessible = false)
+		protected InteractiveEntity(string name, string title, string description, string extendedDescription, bool isAccessible = false)
 			: this(name, title, description, false)
 		{
-			ExtendedDescription = extendedDescription;
+			this.extendedDescription = extendedDescription;
             IsAccessible = isAccessible;
 		}
 
