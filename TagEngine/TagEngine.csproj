@@ -102,6 +102,7 @@
     <Compile Include="Scripting\Conditions\VariableCondition.cs" />
     <Compile Include="Scripting\Conditions\RoomVisitedCondition.cs" />
     <Compile Include="Scripting\Conditions\VisitsToRoomCondition.cs" />
+    <Compile Include="Scripting\Dialogue.cs" />
     <Compile Include="Scripting\IAction.cs" />
     <Compile Include="Scripting\ICondition.cs" />
     <Compile Include="Scripting\ITrigger.cs" />

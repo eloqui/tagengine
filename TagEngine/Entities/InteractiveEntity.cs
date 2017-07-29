@@ -1,4 +1,7 @@
 using System;
+using System.Collections.Generic;
+using System.Linq;
+using TagEngine.Scripting;
 
 namespace TagEngine.Entities
 {
@@ -50,6 +53,15 @@ namespace TagEngine.Entities
 		/// Whether this object can be accessed and carried by the user
 		/// </summary>
 		public bool IsAccessible { get; set; }
+
+        /// <summary>
+        /// Dialogues for this entity
+        /// </summary>
+        public List<Dialogue> Dialogues { get; protected set; }
+
+        protected int currentDialogue = 0;
+
+        public Dialogue DefaultDialogue { get; protected set; }
         
 		#endregion
 
@@ -84,5 +96,56 @@ namespace TagEngine.Entities
 		}
 
         #endregion
+
+        /// <summary>
+        /// Add a line of dialogue
+        /// </summary>
+        /// <param name="d"></param>
+        public void AddDialogue(Dialogue d)
+        {
+            Dialogues.Add(d);
+        }
+
+        /// <summary>
+        /// Get dialogue at an index
+        /// </summary>
+        /// <param name="index"></param>
+        /// <returns></returns>
+        public Dialogue GetDialogue(int index)
+        {
+            if (index >= Dialogues.Count) index = Dialogues.Count - 1;
+            if (index < 0) index = 0;
+
+            return Dialogues[index];
+        }
+
+        /// <summary>
+        /// Get dialogue by name
+        /// </summary>
+        /// <param name="name"></param>
+        /// <returns></returns>
+        public Dialogue GetDialogue(string name)
+        {
+            return Dialogues.FirstOrDefault(d => d.Name == name);
+        }
+
+        /// <summary>
+        /// Get the current dialogue
+        /// </summary>
+        /// <returns></returns>
+        public Dialogue GetCurrentDialogue()
+        {
+            return GetDialogue(currentDialogue);
+        }
+
+        /// <summary>
+        /// Get the next dialogue
+        /// </summary>
+        /// <returns></returns>
+        public Dialogue GetNextDialogue()
+        {
+            currentDialogue++;
+            return GetCurrentDialogue();
+        }
     }
 }

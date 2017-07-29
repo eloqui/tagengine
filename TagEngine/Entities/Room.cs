@@ -140,14 +140,6 @@ namespace TagEngine.Entities
         }
 
         /// <summary>
-        /// Gets the list of NPCs in this room
-        /// </summary>
-        public List<Npc> Npcs
-        {
-            get { return npcs; }
-        }
-
-        /// <summary>
         /// Features of the room that can be looked at or examined
         /// </summary>
         public Dictionary<string, RoomFeature> Features { get; protected set; }
@@ -258,7 +250,7 @@ namespace TagEngine.Entities
         /// <param name="item">The new item</param>
         public void AddItem(Item item)
         {
-            this.items.Add(item);
+            items.Add(item);
         }
 
         /// <summary>
@@ -267,7 +259,7 @@ namespace TagEngine.Entities
         /// <param name="item">The item to remove</param>
         public void RemoveItem(Item item)
         {
-            this.items.Remove(item);
+            items.Remove(item);
         }
 
         /// <summary>
@@ -279,7 +271,7 @@ namespace TagEngine.Entities
         {
             if (item == null) return false;
 
-            return this.items.Contains(item);
+            return items.Contains(item);
         }
 
         //public bool HasItem(string itemName)
@@ -287,35 +279,17 @@ namespace TagEngine.Entities
         //    var matchingItems = from item in items where item.Name == itemName select item;
         //    return matchingItems.Count() > 0;
         //}
-
-        /// <summary>
-        /// Add an NPC to this room
-        /// </summary>
-        /// <param name="npc">The new NPC to add</param>
-        public void AddNpc(Npc npc)
-        {
-            this.npcs.Add(npc);
-        }
-
-        /// <summary>
-        /// Remove an NPC from this room
-        /// </summary>
-        /// <param name="npc">The NPC to remove</param>
-        public void RemoveNpc(Npc npc)
-        {
-            this.npcs.Remove(npc);
-        }
-
+        
         /// <summary>
         /// Check if this room has a particular NPC
         /// </summary>
         /// <param name="npc">The NPC</param>
-        /// <returns>True if the room has the specified NPC</returns>
+        /// <returns>True if the NPC is in this room</returns>
         public bool HasNpc(Npc npc)
         {
             if (npc == null) return false;
 
-            return this.npcs.Contains(npc);
+            return npc.CurrentRoom == this;
         }
 
 
@@ -326,7 +300,7 @@ namespace TagEngine.Entities
         /// <param name="room">The room the new exit leads to</param>
         public void AddExit(Direction exit, Room room)
         {
-            this.exitKeys.Add(exit, room);
+            exitKeys.Add(exit, room);
         }
 
         /// <summary>

@@ -252,7 +252,35 @@ namespace TagEngine.Data
             //archetDialogue.Add("No problems.", true);
             //archetDialogue.Add("See you later.");
 
+            Dialogue d_archet_intro = new Dialogue("archet_intro");
+            var d_archet_intro_ans1 = new Answer("Not much, really.",
+                new Cue("Oh well, but since you're here, I've misplaced some seeds that I need to plant. Could you find them for me?",
+                new Answer("Sure, why not.",
+                new Cue("Great. I'll be right here when you find them."))));
+            d_archet_intro_ans1.AddCondition(new VariableCondition("givenseeds", false));
+            var d_archet_intro_ans2 = new Answer("Not much, really.",
+                new Cue("Oh well, but thanks for getting me those seeds, anyway.",
+                new Answer("No problems.",
+                new Cue("See you later."))));
+            d_archet_intro_ans2.AddCondition(new VariableCondition("givenseeds", true));
+            var d_archet_intro_cue1 = new Cue("Hi, I'm Archet, the ship's gardener. You must be new on board. I don't recognise your face.",
+                new Answer("No, I've only just come aboard.",
+                new Cue("Yes. What do you know about gardening?",
+                d_archet_intro_ans1, d_archet_intro_ans2)));
+            d_archet_intro.AddCue(d_archet_intro_cue1);
+
             //archet.AddDialogue(archetDialogue);
+
+            Dialogue d_archet_seeds = new Dialogue("archet_seeds");
+            var d_archet_seeds_cue1 = new Cue("Hello again. Have you found the seeds?");
+            var d_archet_seeds_ans1 = new Answer("No, I haven't.", new Cue("Oh well, come back when you have.", new Answer("Ok, I will.")));
+            d_archet_seeds_ans1.AddCondition(new VariableCondition("givenseeds", false));
+            d_archet_seeds_ans1.AddCondition(new CarryingItemCondition(seeds, false));
+            d_archet_seeds_cue1.AddAnswer(d_archet_seeds_ans1);
+            var d_archet_seeds_ans2 = new Answer("Yes, I have.", new Cue("Good. Give them to me.", new Answer("Ok.")));
+            d_archet_seeds_ans2.AddCondition(new VariableCondition("givenseeds", false));
+            d_archet_seeds_ans2.AddCondition(new CarryingItemCondition(seeds));
+            d_archet_seeds_cue1.AddAnswer(d_archet_seeds_ans2);
 
             //archetDialogue = new Dialogue(archet.ProperName);
             //archetDialogue.Add("Hello again. Have you found the seeds?");
@@ -276,9 +304,13 @@ namespace TagEngine.Data
             //archetDialogue.Add("Not bad, thanks.");
             //archetDialogue.Add("Nice talking with you.", true);
 
+            Dialogue d_archet_default = new Dialogue("archet_default");
+            d_archet_default.AddCue(new Cue("Hello.", new Answer("How's it going?", new Cue("Not bad, thanks.", new Answer("Nice talking with you.")))));
+
             //archet.DefaultDialogue = archetDialogue;
 
             //garden.AddNpc(archet.Name);
+            archet.MoveTo(garden);
 
             #endregion
 

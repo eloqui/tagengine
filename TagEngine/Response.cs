@@ -10,6 +10,7 @@ namespace TagEngine
     public enum ResponseAction
     {
         None,
+        Dialogue,
         Quit,
         Pause,
         LoseGame,
