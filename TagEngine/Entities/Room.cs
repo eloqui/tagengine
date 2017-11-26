@@ -210,7 +210,7 @@ namespace TagEngine.Entities
             : this(name, title, description, exits)
         {
             foreach (var item in items) AddItem(item);
-            foreach (var npc in npcs) AddNpc(npc);
+            //foreach (var npc in npcs) AddNpc(npc);
             foreach (var feature in features) AddFeature(feature);
         }
 
